@@ -1,7 +1,7 @@
 import * as yargs from "yargs";
 import file from "../Common/file";
 import * as chalk from "chalk";
-import { Config } from "../Common/Types/Config";
+import {Config} from "../Common/Types/Config";
 import * as path from "path";
 
 export class InitCommand implements yargs.CommandModule {
@@ -48,7 +48,7 @@ export class InitCommand implements yargs.CommandModule {
             InitCommand.createAppFolder(dir);
             InitCommand.createConfigFile("default", false, dir);
         } else {
-            InitCommand.createOnionFolders(cqrs === "no");
+            InitCommand.createOnionFolders(cqrs === "yes");
             InitCommand.createConfigFile("onion", true, dir);
         }
 
@@ -139,9 +139,6 @@ export class InitCommand implements yargs.CommandModule {
             `${file.getCurrentDirectoryBase()}/src/Presentation/Http/Presenters`
         );
 
-        file.makeDirectory(
-            `${file.getCurrentDirectoryBase()}/src/Presentation/Http/Enums`
-        );
 
         file.makeDirectory(
             `${file.getCurrentDirectoryBase()}/src/Presentation/Http/Exceptions`
@@ -158,6 +155,23 @@ export class InitCommand implements yargs.CommandModule {
         file.makeDirectory(
             `${file.getCurrentDirectoryBase()}/src/Presentation/Http/Validations/Utils`
         );
+        file.writeFile(
+            `${file.getCurrentDirectoryBase()}/src/Presentation/Http/Validations/Utils/JoiValidationService.ts`,
+            file.readFile(file.resource_path('/stubs/Utils/JoiValidationService.stub'))
+        );
+        file.writeFile(
+            `${file.getCurrentDirectoryBase()}/src/Presentation/Http/Validations/Utils/ValidationService.ts`,
+            file.readFile(file.resource_path('/stubs/Utils/ValidationService.stub'))
+        );
+        file.writeFile(
+            `${file.getCurrentDirectoryBase()}/src/Presentation/Http/Validations/Utils/BaseErrorSchema.ts`,
+            file.readFile(file.resource_path('/stubs/Utils/BaseErrorSchema.stub'))
+        );
+        file.writeFile(
+            `${file.getCurrentDirectoryBase()}/src/Presentation/Http/Validations/Utils/ErrorMessages.ts`,
+            file.readFile(file.resource_path('/stubs/Utils/ErrorMessages.stub'))
+        );
+
 
         file.makeDirectory(
             `${file.getCurrentDirectoryBase()}/src/Presentation/Http/Validations/Schemas`
@@ -197,6 +211,11 @@ export class InitCommand implements yargs.CommandModule {
             `${file.getCurrentDirectoryBase()}/src/Infrastructure/Persistence/Repositories`
         );
 
+        file.writeFile(
+            `${file.getCurrentDirectoryBase()}/src/Infrastructure/Persistence/Repositories/TypeRepository.ts`,
+            file.readFile(file.resource_path('/stubs/Utils/TypeRepository.stub'))
+        );
+
         file.makeDirectory(`${file.getCurrentDirectoryBase()}/src/Domain/Entities`);
 
         file.makeDirectory(
@@ -214,6 +233,38 @@ export class InitCommand implements yargs.CommandModule {
         file.makeDirectory(
             `${file.getCurrentDirectoryBase()}/src/Infrastructure/Persistence/Migrations`
         );
+        file.writeFile(
+            `${file.getCurrentDirectoryBase()}/src/Infrastructure/Persistence/DatabaseConnection.ts`,
+            file.readFile(file.resource_path('/stubs/Utils/DatabaseConnection.stub'))
+        );
+        file.writeFile(
+            `${file.getCurrentDirectoryBase()}/src/Infrastructure/Persistence/Config/ProductionConfig.ts`,
+            file.readFile(file.resource_path('/stubs/Utils/DatabaseProductionConfig.stub'))
+        );
+        file.writeFile(
+            `${file.getCurrentDirectoryBase()}/src/Infrastructure/Persistence/Config/DevelopmentConfig.ts`,
+            file.readFile(file.resource_path('/stubs/Utils/DatabaseDevelopmentConfig.stub'))
+        );
+        file.writeFile(
+            `${file.getCurrentDirectoryBase()}/src/Infrastructure/Persistence/Config/TestingConfig.ts`,
+            file.readFile(file.resource_path('/stubs/Utils/DatabaseTestingConfig.stub'))
+        );
+        file.writeFile(
+            `${file.getCurrentDirectoryBase()}/src/Infrastructure/Persistence/Config/ConfigVariables.ts`,
+            file.readFile(file.resource_path('/stubs/Utils/DatabaseCommonConfig.stub'))
+        );
+
+        file.makeDirectory(
+            `${file.getCurrentDirectoryBase()}/src/Infrastructure/DI`
+        );
+        file.writeFile(
+            `${file.getCurrentDirectoryBase()}/src/Infrastructure/DI/di.config.ts`,
+            file.readFile(file.resource_path('/stubs/Utils/di.config.stub'))
+        );
+        file.writeFile(
+            `${file.getCurrentDirectoryBase()}/src/Infrastructure/DI/interfaces.types.ts`,
+            file.readFile(file.resource_path('/stubs/Utils/interfaces.types.stub'))
+        );
 
         file.writeFile(
             `${file.getCurrentDirectoryBase()}/tsconfig.json`,
@@ -224,6 +275,20 @@ export class InitCommand implements yargs.CommandModule {
             `${file.getCurrentDirectoryBase()}/.env`,
             InitCommand.createEnvironmentFiles()
         );
+
+        file.writeFile(
+            `${file.getCurrentDirectoryBase()}/src/server.ts`,
+            file.readFile(file.resource_path('/stubs/Utils/server.stub'))
+        );
+        let appStub = file.resource_path('/stubs/Utils/App.stub');
+        appStub = appStub.replace(/database_connection_path/gi, 'Infrastructure/Persistence/DatabaseConnection');
+        appStub = appStub.replace(/error_handler_path/gi, 'Infrastructure/Debug/ErrorHandler');
+        appStub = appStub.replace(/routes_path/gi, 'Presentation/Http/Routes');
+
+        file.writeFile(
+            `${file.getCurrentDirectoryBase()}/src/App.ts`,
+            file.readFile(appStub)
+        );
     }
 
     private static createConfigFile(type: string, cqrs: boolean, dir: string) {
@@ -233,7 +298,7 @@ export class InitCommand implements yargs.CommandModule {
             `/config.json`
         );
 
-        const content = InitCommand.getConfigContentFromType(cqrs);
+        const content = InitCommand.getConfigContentFromType(type, cqrs);
 
         file.writeFile(filePath, JSON.stringify(content, undefined, 3));
 
@@ -263,20 +328,20 @@ export class InitCommand implements yargs.CommandModule {
         file.writeFile(ormFile, JSON.stringify(ormContent, undefined, 3));
     }
 
-    private static getConfigContentFromType(cqrs: boolean): Config {
+    private static getConfigContentFromType(type: string, cqrs: boolean): Config {
         if (cqrs) {
             return {
                 type: "onion",
                 cqrs,
                 adapterPath: "src/Presentation/Http/Adapters/",
-                commandHandlerPath: "src/Application/Commands/Handler/",
-                commandInputPath: "src/Application/Commands/Command/",
+                commandHandlerPath: type === 'default' ? "src/Application/Handlers/" : "src/Application/Commands/Handler/",
+                commandInputPath: type === 'default' ? "src/Application/Commands/" : "src/Application/Commands/Command/",
                 controllerPath: "src/Presentation/Http/Actions/",
                 database: "MySql",
                 modelPath: "src/Domain/Entities/",
                 repositoryInterfacePath: "src/Domain/Interfaces/Repositories/",
                 repositoryPath: "src/Infrastructure/Persistence/Repositories/",
-                shouldCreateQueryResult: true,
+                shouldCreateQueryResult: type !== 'default',
                 shouldCreateRepositoryInterface: true,
                 diPath: "src/Infrastructure/DI/di.config.ts",
             };
@@ -291,7 +356,7 @@ export class InitCommand implements yargs.CommandModule {
             cqrs: false,
             database: "Mysql",
             modelPath: "src/App/Models/",
-            repositoryInterfacePath: "/",
+            repositoryInterfacePath: "src/App/Interfaces/Repositories/",
             repositoryPath: "src/App/Repositories/",
             shouldCreateQueryResult: false,
             shouldCreateRepositoryInterface: false,

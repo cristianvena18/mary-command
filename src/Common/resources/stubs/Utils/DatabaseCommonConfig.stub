@@ -1,0 +1,11 @@
+import("dotenv");
+
+export const ConfigVariables = () => ({
+  db_username: process.env.DATABASE_USER,
+  db_password: process.env.DATABASE_PASSWORD,
+  db_database: process.env.DATABASE_NAME,
+  db_port: process.env.DATABASE_PORT,
+  db_host: process.env.DATABASE_HOST,
+  redis_host: process.env.REDIS_HOST,
+  redis_port: +process.env.REDIS_PORT,
+});

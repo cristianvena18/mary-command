@@ -1,0 +1,11 @@
+import { INTERFACES } from './interfaces.types';
+
+//Actions
+
+//Adapters
+
+//Handlers
+
+//Services
+
+//Repositories
