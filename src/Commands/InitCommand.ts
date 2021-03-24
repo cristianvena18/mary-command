@@ -45,11 +45,11 @@ export class InitCommand implements yargs.CommandModule {
         const cqrs = args.cqrs as string;
 
         if (type === "default") {
-            InitCommand.createAppFolder(dir);
+            InitCommand.createAppFolder();
             InitCommand.createConfigFile("default", false, dir);
         } else {
             InitCommand.createOnionFolders(cqrs === "yes");
-            InitCommand.createConfigFile("onion", true, dir);
+            InitCommand.createConfigFile("onion", cqrs === 'yes', dir);
         }
 
         InitCommand.createEnvironmentFiles();
@@ -72,15 +72,14 @@ export class InitCommand implements yargs.CommandModule {
         return file.directoryExists(path);
     }
 
-    private static createAppFolder(dir: string) {
+    private static createAppFolder() {
         file.makeDirectory(
-            path.join(file.getCurrentDirectoryBase(), dir, "/src/App")
+            path.join(file.getCurrentDirectoryBase(), "/src/App")
         );
 
         file.makeDirectory(
             path.join(
                 file.getCurrentDirectoryBase(),
-                dir,
                 `/src/App/Http/Controllers`
             )
         );
@@ -88,43 +87,145 @@ export class InitCommand implements yargs.CommandModule {
         file.makeDirectory(
             path.join(
                 file.getCurrentDirectoryBase(),
-                dir,
                 `/src/App/Http/Middlewares`
             )
         );
 
         file.makeDirectory(
-            path.join(file.getCurrentDirectoryBase(), dir, `/src/App/Services`)
-        );
-
-        file.makeDirectory(
-            path.join(file.getCurrentDirectoryBase(), dir, `/src/App/Repositories`)
-        );
-
-        file.makeDirectory(
-            path.join(file.getCurrentDirectoryBase(), dir, `/src/App/Models`)
-        );
-
-        file.makeDirectory(
-            path.join(file.getCurrentDirectoryBase(), dir, `/src/database/migrations`)
-        );
-
-        file.makeDirectory(
-            path.join(file.getCurrentDirectoryBase(), dir, `/src/routes`)
+            path.join(file.getCurrentDirectoryBase(), `/src/App/Services`)
         );
 
         file.writeFile(
-            path.join(file.getCurrentDirectoryBase(), dir, `/tsconfig.json`),
+            `${file.getCurrentDirectoryBase()}/src/App/Services/Validation/JoiValidationService.ts`,
+            file.readFile(file.resource_path('/stubs/Utils/JoiValidationService.stub'))
+        );
+        file.writeFile(
+            `${file.getCurrentDirectoryBase()}/src/App/Services/Validation/ValidationService.ts`,
+            file.readFile(file.resource_path('/stubs/Utils/ValidationService.stub'))
+        );
+        file.writeFile(
+            `${file.getCurrentDirectoryBase()}/src/App/Services/Validation/BaseErrorSchema.ts`,
+            file.readFile(file.resource_path('/stubs/Utils/BaseErrorSchema.stub'))
+        );
+        file.writeFile(
+            `${file.getCurrentDirectoryBase()}/src/App/Services/Validation/ErrorMessages.ts`,
+            file.readFile(file.resource_path('/stubs/Utils/ErrorMessages.stub'))
+        );
+
+        file.makeDirectory(
+            path.join(file.getCurrentDirectoryBase(), `/src/App/Repositories`)
+        );
+        file.writeFile(
+            `${file.getCurrentDirectoryBase()}/src/App/Repositories/TypeRepository.ts`,
+            file.readFile(file.resource_path('/stubs/Utils/TypeRepository.stub'))
+        );
+
+        file.makeDirectory(
+            path.join(file.getCurrentDirectoryBase(), `/src/App/Enums`)
+        );
+        file.writeFile(
+            `${file.getCurrentDirectoryBase()}/src/App/Enums/HttpCodes.ts`,
+            file.readFile(file.resource_path('/stubs/Utils/HttpCodes.stub'))
+        );
+        file.writeFile(
+            `${file.getCurrentDirectoryBase()}/src/App/Enums/LogLevels.ts`,
+            file.readFile(file.resource_path('/stubs/Utils/LogLevels.stub'))
+        );
+
+        file.makeDirectory(
+            path.join(file.getCurrentDirectoryBase(), `/src/App/Models`)
+        );
+
+        file.makeDirectory(
+            path.join(file.getCurrentDirectoryBase(), `/src/database/migrations`)
+        );
+
+        file.writeFile(
+            `${file.getCurrentDirectoryBase()}/src/database/DatabaseConnection.ts`,
+            file.readFile(file.resource_path('/stubs/Utils/DatabaseConnection.stub'))
+        );
+        file.writeFile(
+            `${file.getCurrentDirectoryBase()}/src/database/Config/ProductionConfig.ts`,
+            file.readFile(file.resource_path('/stubs/Utils/DatabaseProductionConfig.stub'))
+        );
+        file.writeFile(
+            `${file.getCurrentDirectoryBase()}/src/database/Config/DevelopmentConfig.ts`,
+            file.readFile(file.resource_path('/stubs/Utils/DatabaseDevelopmentConfig.stub'))
+        );
+        file.writeFile(
+            `${file.getCurrentDirectoryBase()}/src/database/Config/TestingConfig.ts`,
+            file.readFile(file.resource_path('/stubs/Utils/DatabaseTestingConfig.stub'))
+        );
+        file.writeFile(
+            `${file.getCurrentDirectoryBase()}/src/database/Config/ConfigVariables.ts`,
+            file.readFile(file.resource_path('/stubs/Utils/DatabaseCommonConfig.stub'))
+        );
+
+        file.makeDirectory(
+            `${file.getCurrentDirectoryBase()}/src/App/DI`
+        );
+        let diStub = file.readFile(file.resource_path('/stubs/Utils/di.config.stub'));
+        diStub = diStub.replace(/{{router_path}}/gi, '../../routes');
+        diStub = diStub.replace(/{{validation_interface_path}}/gi, '../Services/ValidationService');
+        diStub = diStub.replace(/{{logger_interface_path}}/gi, '../Services/Logger/LoggerService');
+        diStub = diStub.replace(/{{validation_service_path}}/gi, '../Services/JoiValidationService');
+        diStub = diStub.replace(/{{logger_service_path}}/gi, '../Services/Logger/WinstonLoggerService');
+
+        file.writeFile(`${file.getCurrentDirectoryBase()}/src/App/DI/di.config.ts`, diStub);
+        file.writeFile(
+            `${file.getCurrentDirectoryBase()}/src/App/DI/interfaces.types.ts`,
+            file.readFile(file.resource_path('/stubs/Utils/interfaces.types.stub'))
+        );
+        file.makeDirectory(
+            `${file.getCurrentDirectoryBase()}/src/App/Debug`
+        );
+        file.writeFile(
+            `${file.getCurrentDirectoryBase()}/src/App/Debug/ErrorHandler.ts`,
+            file.readFile(file.resource_path('/stubs/Utils/ErrorHandler.stub')) //TODO: add dependencies
+        );
+        file.writeFile(
+            `${file.getCurrentDirectoryBase()}/src/App/Debug/customResponse.ts`,
+            file.readFile(file.resource_path('/stubs/Utils/customResponse.stub'))
+        );
+
+        file.makeDirectory(
+            path.join(file.getCurrentDirectoryBase(), `/src/routes`)
+        );
+        file.writeFile(
+            `${file.getCurrentDirectoryBase()}/src/routes/index.ts`,
+            file.readFile(file.resource_path('/stubs/Utils/Router.stub'))
+        );
+
+        file.writeFile(
+            path.join(file.getCurrentDirectoryBase(), `/tsconfig.json`),
             InitCommand.getTsConfigTemplate()
         );
 
         file.writeFile(
-            path.join(file.getCurrentDirectoryBase(), dir, `/.env`),
+            path.join(file.getCurrentDirectoryBase(), `/.env`),
             InitCommand.createEnvironmentFiles()
+        );
+
+        file.writeFile(
+            `${file.getCurrentDirectoryBase()}/src/server.ts`,
+            file.readFile(file.resource_path('/stubs/Utils/server.stub'))
+        );
+        let appStub = file.readFile(file.resource_path('/stubs/Utils/App.stub'));
+        appStub = appStub.replace(/{{database_connection_path}}/gi, 'database/DatabaseConnection');
+        appStub = appStub.replace(/{{error_handler_path}}/gi, 'Debug/ErrorHandler');
+        appStub = appStub.replace(/{{routes_path}}/gi, 'routes');
+
+        file.writeFile(
+            `${file.getCurrentDirectoryBase()}/src/App.ts`,
+            appStub
         );
     }
 
     private static createOnionFolders(cqrs: boolean) {
+
+        /**
+         * Presentation dependencies
+         */
         file.makeDirectory(`${file.getCurrentDirectoryBase()}/src/Presentation`);
 
         file.makeDirectory(
@@ -143,9 +244,14 @@ export class InitCommand implements yargs.CommandModule {
         file.makeDirectory(
             `${file.getCurrentDirectoryBase()}/src/Presentation/Http/Exceptions`
         );
+        InitCommand.copyPresentationExceptions(`${file.getCurrentDirectoryBase()}/src/Presentation/Http/Exceptions`);
 
         file.makeDirectory(
             `${file.getCurrentDirectoryBase()}/src/Presentation/Http/Routes`
+        );
+        file.writeFile(
+            `${file.getCurrentDirectoryBase()}/src/Presentation/Http/Routes/index.ts`,
+            file.readFile(file.resource_path('/stubs/Utils/Router.stub'))
         );
 
         file.makeDirectory(
@@ -177,6 +283,9 @@ export class InitCommand implements yargs.CommandModule {
             `${file.getCurrentDirectoryBase()}/src/Presentation/Http/Validations/Schemas`
         );
 
+        /**
+         * Application dependencies
+         */
         if (cqrs) {
             file.makeDirectory(
                 `${file.getCurrentDirectoryBase()}/src/Application/Commands/Command`
@@ -207,15 +316,9 @@ export class InitCommand implements yargs.CommandModule {
             );
         }
 
-        file.makeDirectory(
-            `${file.getCurrentDirectoryBase()}/src/Infrastructure/Persistence/Repositories`
-        );
-
-        file.writeFile(
-            `${file.getCurrentDirectoryBase()}/src/Infrastructure/Persistence/Repositories/TypeRepository.ts`,
-            file.readFile(file.resource_path('/stubs/Utils/TypeRepository.stub'))
-        );
-
+        /**
+         * Domain dependencies
+         */
         file.makeDirectory(`${file.getCurrentDirectoryBase()}/src/Domain/Entities`);
 
         file.makeDirectory(
@@ -228,6 +331,32 @@ export class InitCommand implements yargs.CommandModule {
 
         file.makeDirectory(
             `${file.getCurrentDirectoryBase()}/src/Domain/Interfaces/Services`
+        );
+        file.writeFile(
+            `${file.getCurrentDirectoryBase()}/src/Domain/Interfaces/Services/LoggerService.ts`,
+            file.readFile(file.resource_path('/stubs/Utils/LoggerService.stub'))
+        );
+
+        file.writeFile(
+            `${file.getCurrentDirectoryBase()}/src/Domain/Enums/LogLevels.ts`,
+            file.readFile(file.resource_path('/stubs/Utils/LogLevels.stub'))
+        );
+
+        /**
+         * Infrastructure dependencies
+         */
+        file.makeDirectory(
+            `${file.getCurrentDirectoryBase()}/src/Infrastructure/Persistence/Repositories`
+        );
+
+        file.writeFile(
+            `${file.getCurrentDirectoryBase()}/src/Infrastructure/Persistence/Repositories/TypeRepository.ts`,
+            file.readFile(file.resource_path('/stubs/Utils/TypeRepository.stub'))
+        );
+
+        file.writeFile(
+            `${file.getCurrentDirectoryBase()}/src/Infrastructure/Logger/Providers/WinstonLoggerService.ts`,
+            file.readFile(file.resource_path('/stubs/Utils/WinstonLoggerService.stub')) //TODO: add dependencies
         );
 
         file.makeDirectory(
@@ -257,15 +386,34 @@ export class InitCommand implements yargs.CommandModule {
         file.makeDirectory(
             `${file.getCurrentDirectoryBase()}/src/Infrastructure/DI`
         );
+        let diStub = file.readFile(file.resource_path('/stubs/Utils/di.config.stub'));
+        diStub = diStub.replace(/{{router_path}}/gi, '../../Presentation/Http/Routes');
+        diStub = diStub.replace(/{{validation_interface_path}}/gi, '../../Presentation/Http/Validations/Utils/ValidationService');
+        diStub = diStub.replace(/{{logger_interface_path}}/gi, '../../Domain/Interfaces/Services/LoggerService');
+        diStub = diStub.replace(/{{validation_service_path}}/gi, '../../Presentation/Http/Validations/Utils/JoiValidationService');
+        diStub = diStub.replace(/{{logger_service_path}}/gi, '../../Infrastructure/Logger/Providers/WinstonLoggerService');
+
         file.writeFile(
             `${file.getCurrentDirectoryBase()}/src/Infrastructure/DI/di.config.ts`,
-            file.readFile(file.resource_path('/stubs/Utils/di.config.stub'))
+            diStub
         );
         file.writeFile(
             `${file.getCurrentDirectoryBase()}/src/Infrastructure/DI/interfaces.types.ts`,
             file.readFile(file.resource_path('/stubs/Utils/interfaces.types.stub'))
         );
 
+        file.writeFile(
+            `${file.getCurrentDirectoryBase()}/src/Infrastructure/Debug/ErrorHandler.ts`,
+            file.readFile(file.resource_path('/stubs/Utils/ErrorHandler.stub')) //TODO: add dependencies
+        );
+        file.writeFile(
+            `${file.getCurrentDirectoryBase()}/src/Infrastructure/Debug/customResponse.ts`,
+            file.readFile(file.resource_path('/stubs/Utils/customResponse.stub'))
+        );
+
+        /**
+         * Root dependencies
+         */
         file.writeFile(
             `${file.getCurrentDirectoryBase()}/tsconfig.json`,
             InitCommand.getTsConfigTemplate()
@@ -280,14 +428,14 @@ export class InitCommand implements yargs.CommandModule {
             `${file.getCurrentDirectoryBase()}/src/server.ts`,
             file.readFile(file.resource_path('/stubs/Utils/server.stub'))
         );
-        let appStub = file.resource_path('/stubs/Utils/App.stub');
-        appStub = appStub.replace(/database_connection_path/gi, 'Infrastructure/Persistence/DatabaseConnection');
-        appStub = appStub.replace(/error_handler_path/gi, 'Infrastructure/Debug/ErrorHandler');
-        appStub = appStub.replace(/routes_path/gi, 'Presentation/Http/Routes');
+        let appStub = file.readFile(file.resource_path('/stubs/Utils/App.stub'));
+        appStub = appStub.replace(/{{database_connection_path}}/gi, 'Infrastructure/Persistence/DatabaseConnection');
+        appStub = appStub.replace(/{{error_handler_path}}/gi, 'Infrastructure/Debug/ErrorHandler');
+        appStub = appStub.replace(/{{routes_path}}/gi, 'Presentation/Http/Routes');
 
         file.writeFile(
             `${file.getCurrentDirectoryBase()}/src/App.ts`,
-            file.readFile(appStub)
+            appStub
         );
     }
 
@@ -405,5 +553,9 @@ export class InitCommand implements yargs.CommandModule {
     NO_REPLY_EMAIL=
     
     DEBUG_EMAIL=`;
+    }
+
+    private static copyPresentationExceptions(path: string) {
+
     }
 }

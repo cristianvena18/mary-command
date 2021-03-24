@@ -1,0 +1,58 @@
+import { inject, injectable } from "inversify";
+import { LoggerService } from "../../../{{interface_path}}";
+import { createLogger, format, Logger, transports } from "winston";
+import { LogLevels } from "../../../{{log_levels_path}}";
+
+/**
+ * A simple logger that allow multiple transports
+ */
+@injectable()
+export class WinstonLogger implements LoggerService {
+  private logger: Logger;
+
+  private readonly logFormatCommon = format.printf(function (info): string {
+    const date = new Date().toISOString();
+    return `[${date}] [${info.level}]: ${info.message}`;
+  });
+
+  public constructor(
+  ) {
+    this.logger = createLogger({
+      format: this.logFormatCommon,
+      defaultMeta: { service: "user-service" },
+      transports: [
+        //
+        // - Write to all loggers with level `info` and below to `combined.logger`
+        // - Write all loggers error (and below) to `error.logger`.
+        //
+        new transports.File({ filename: "logs/error.log", level: "error" }),
+        new transports.File({ filename: "logs/info.log" }),
+      ],
+    });
+
+    //
+    // If we're not in production then logger to the `console` with the format:
+    // `${info.level}: ${info.message} JSON.stringify({ ...rest }) `
+    //
+    if (process.env.NODE_ENV !== "production") {
+      this.logger.add(
+        new transports.Console({
+          format: this.logFormatCommon,
+        })
+      );
+    }
+  }
+
+  public log(level: LogLevels, message: string): void {
+    this.logger.log(level, message);
+  }
+
+  public error(error: Error): void {
+    this.logger.error(error);
+  }
+
+  public report(level: LogLevels, message: string): void {
+    //TODO: implement better reporter for your application.
+    this.log(level, message);
+  }
+}
