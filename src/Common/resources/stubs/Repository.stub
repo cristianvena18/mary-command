@@ -1,4 +1,5 @@
 import TypeRepository from './TypeRepository';
+import { {{type}} } from '../../../Domain/Entities/{{type}}';
 {{interface_path}}
 
 export default class {{database}}{{type}}Repository extends TypeRepository {{interface}} {
@@ -6,11 +7,11 @@ export default class {{database}}{{type}}Repository extends TypeRepository {{int
         await this.repository({{type}}).save({{name}});
     }
 
-    public async findOneById(id: number): Promise<{{name}}> {
+    public async findOneById(id: number): Promise<{{type}}> {
         return await this.repository({{type}}).findOne(id);
     }
 
-    public async findAll(page: number, size: number): Promise<{{name}}[]> {
+    public async findAll(page: number, size: number): Promise<{{type}}[]> {
         return await this.repository({{type}}).find({take: size, skip: page});
     }
 

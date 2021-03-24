@@ -3,7 +3,7 @@ import * as fs from "fs";
 
 class FileManager {
   public getCurrentDirectoryBase() {
-    return process.cwd();
+    return process.cwd() + '/';
   }
 
   public directoryExists(filePath) {

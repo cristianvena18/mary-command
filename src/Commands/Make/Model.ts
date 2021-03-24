@@ -11,10 +11,12 @@ export class MakeModel implements yargs.CommandModule {
     return args
       .option("n", {
         alias: "name",
+        required: true,
         describe: "Name of model",
       })
       .option("p", {
         alias: "parameters",
+        required: true,
         describe: "Attributes of the model",
       });
   }
