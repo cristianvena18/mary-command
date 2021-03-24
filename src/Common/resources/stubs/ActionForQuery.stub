@@ -1,0 +1,30 @@
+import { Request, Response } from 'express';
+import {{action}}Adapter from '../../Adapters/{{grouping}}/{{action}}Adapter';
+import {{action}}Handler from '../../../../Application/Queries/Handler/{{grouping}}/{{action}}Handler';
+import { injectable, inject } from 'inversify';
+
+@injectable()
+class {{action}}Action
+{
+    private adapter: {{action}}Adapter;
+    private handler: {{action}}Handler;
+
+    public constructor(
+        @inject({{action}}Adapter) adapter: {{action}}Adapter,
+        @inject({{action}}Handler) handler: {{action}}Handler
+    ) {
+        this.handler = handler;
+        this.adapter = adapter;
+    }
+
+    public async execute(req: Request, res: Response)
+    {
+        const query = this.adapter.adapt(req.query);
+
+        const result = await this.handler.execute(query);
+
+        // TODO: Code your response logic. You can use presenters or transformers.
+    }
+}
+
+export default {{action}}Action;

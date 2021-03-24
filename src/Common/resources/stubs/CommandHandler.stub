@@ -1,0 +1,19 @@
+import HandlerInterface from '../../../../Infrastructure/CommandBus/Handler/IHandler';
+import {{action}}Command from '../../../Commands/Command/{{grouping}}/{{action}}Command';
+import { injectable, inject } from 'inversify';
+
+@injectable()
+class {{action}}Handler implements HandlerInterface
+{
+    /**
+     * Execute the given command
+     *
+     * @return void
+     */
+    public async execute(command: {{action}}Command): Promise<void>
+    {
+
+    }
+}
+
+export default {{action}}Handler;

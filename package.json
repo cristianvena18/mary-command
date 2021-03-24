@@ -1,0 +1,24 @@
+{
+  "name": "mary-command",
+  "version": "0.1.0",
+  "description": "Bootstrapping node app for backend and CLI for create classes",
+  "bin": {
+    "mary-command": "./index.js"
+  },
+  "author": "cristianvena18 <cristiandamianvena@gmail.com>",
+  "license": "ISC",
+  "dependencies": {
+    "@types/yargs": "^15.0.4",
+    "chalk": "^4.1.0",
+    "cli-app": "^0.1.0",
+    "reflect-metadata": "^0.1.13",
+    "yargonaut": "^1.1.4",
+    "yargs": "^16.0.3"
+  },
+  "devDependencies": {
+    "@types/node": "^14.14.22",
+    "prettier": "^2.2.1",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.1.3"
+  }
+}

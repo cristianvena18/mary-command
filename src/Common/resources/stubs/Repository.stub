@@ -1,0 +1,20 @@
+import TypeRepository from './TypeRepository';
+{{interface_path}}
+
+export default class {{database}}{{type}}Repository extends TypeRepository {{interface}} {
+    public async persist({{name}}: {{type}}): Promise<void> {
+        await this.repository({{type}}).save({{name}});
+    }
+
+    public async findOneById(id: number): Promise<{{name}}> {
+        return await this.repository({{type}}).findOne(id);
+    }
+
+    public async findAll(page: number, size: number): Promise<{{name}}[]> {
+        return await this.repository({{type}}).find({take: size, skip: page});
+    }
+
+    public async delete({{name}}: {{type}}): Promise<void> {
+        await this.repository({{type}}).remove({{name}});
+    }
+}

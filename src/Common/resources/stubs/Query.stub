@@ -1,0 +1,14 @@
+import QueryInterface from '../../../../Infrastructure/QueryBus/Query/IQuery';
+
+class {{action}}Query implements QueryInterface
+{
+{{class_attributes}}
+    public constructor(
+{{constructor_parameters}}
+    ) {
+{{constructor_assignments}}
+    }
+{{get_methods}}
+}
+
+export default {{action}}Query;

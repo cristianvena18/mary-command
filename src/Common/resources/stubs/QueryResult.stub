@@ -1,0 +1,17 @@
+import ResultInterface from '../../../../Infrastructure/QueryBus/Result/IResult';
+
+class {{action}}Result implements ResultInterface
+{
+    private value: any;
+    public constructor(
+        value: any
+    ) {
+        this.value = value;
+    }
+
+    public getData(): any {
+        return this.value;
+    }
+}
+
+export default {{action}}Result;

@@ -1,0 +1,14 @@
+import CommandInterface from '../../../../Infrastructure/CommandBus/Command/ICommand';
+
+class {{action}}Command implements CommandInterface
+{
+{{class_attributes}}
+    public constructor(
+{{constructor_parameters}}
+    ) {
+{{constructor_assignments}}
+    }
+{{get_methods}}
+}
+
+export default {{action}}Command;
