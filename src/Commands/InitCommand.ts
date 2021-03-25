@@ -55,7 +55,6 @@ export class InitCommand implements yargs.CommandModule {
     InitCommand.createEnvironmentFiles();
   }
 
-  //TODO: check dir passed from args
   private static checkIfExistAnyProject(dir: string) {
     const _path = path.join(
       file.getCurrentDirectoryBase(),
@@ -108,7 +107,7 @@ export class InitCommand implements yargs.CommandModule {
 
     let loggerStub = file.readFile(
       file.resource_path("/stubs/Utils/WinstonLoggerService.stub")
-    ); //TODO: add dependencies
+    );
     loggerStub = loggerStub.replace(/{{interface_path}}/gi, "./LoggerService");
     loggerStub = loggerStub.replace(
       /{{log_levels_path}}/gi,
@@ -225,7 +224,7 @@ export class InitCommand implements yargs.CommandModule {
     file.makeDirectory(`${file.getCurrentDirectoryBase()}/src/App/Debug`);
     let errorHandlerStub = file.readFile(
       file.resource_path("/stubs/Utils/ErrorHandler.stub")
-    ); //TODO: add dependencies
+    );
     errorHandlerStub = errorHandlerStub.replace(
       /{{application_exceptions_path}}/gi,
       "../Exceptions"
@@ -291,6 +290,11 @@ export class InitCommand implements yargs.CommandModule {
     file.writeFile(
       `${file.getCurrentDirectoryBase()}/package.json`,
       InitCommand.getNodePackageTemplate()
+    );
+
+    file.writeFile(
+      `${file.getCurrentDirectoryBase()}/.gitignore`,
+      InitCommand.getGitIgnoreFile()
     );
   }
 
@@ -447,7 +451,7 @@ export class InitCommand implements yargs.CommandModule {
 
     let loggerStub = file.readFile(
       file.resource_path("/stubs/Utils/WinstonLoggerService.stub")
-    ); //TODO: add dependencies
+    );
     loggerStub = loggerStub.replace(
       /{{interface_path}}/gi,
       "../../../Domain/Interfaces/Services/LoggerService"
@@ -624,6 +628,10 @@ export class InitCommand implements yargs.CommandModule {
       `${file.getCurrentDirectoryBase()}/package.json`,
       InitCommand.getNodePackageTemplate()
     );
+    file.writeFile(
+      `${file.getCurrentDirectoryBase()}/.gitignore`,
+      InitCommand.getGitIgnoreFile()
+    );
   }
 
   private static createConfigFile(type: string, cqrs: boolean, dir: string) {
@@ -692,6 +700,7 @@ export class InitCommand implements yargs.CommandModule {
           emitDecoratorMetadata: true,
           experimentalDecorators: true,
           sourceMap: true,
+          esModuleInterop: true,
         },
       },
       undefined,
@@ -699,28 +708,41 @@ export class InitCommand implements yargs.CommandModule {
     );
   }
 
+  /**
+   * Gets contents of the .gitignore file.
+   */
+  protected static getGitIgnoreFile(): string {
+    return `.idea/
+.vscode/
+node_modules/
+build/
+dist/
+tmp/
+temp/
+yarn.lock`;
+  }
+
   private static createEnvironmentFiles() {
     let r = Math.random().toString(36);
 
-    return `
-    TYPEORM_DATABASE=database
-    TYPEORM_USERNAME=test
-    TYPEORM_PASSWORD=test
-    TYPEORM_HOST=mysql
-    TYPEORM_PORT=3306
+    return `TYPEORM_DATABASE=database
+TYPEORM_USERNAME=test
+TYPEORM_PASSWORD=test
+TYPEORM_HOST=mysql
+TYPEORM_PORT=3306
     
-    NODE_ENV=development
+NODE_ENV=development
     
-    HASH_ROUND=12
+HASH_ROUND=12
     
-    JWT_SECRET=${r}
-    JWT_EXPIRES_IN=1h
+JWT_SECRET=${r}
+JWT_EXPIRES_IN=1h
     
-    MAIL_APIKEY=
+MAIL_APIKEY=
     
-    NO_REPLY_EMAIL=
+NO_REPLY_EMAIL=
     
-    DEBUG_EMAIL=`;
+DEBUG_EMAIL=`;
   }
 
   private static copyPresentationExceptions(path: string) {
