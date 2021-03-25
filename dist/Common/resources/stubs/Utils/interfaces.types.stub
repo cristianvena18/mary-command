@@ -1,0 +1,5 @@
+export const INTERFACES = {
+    //Symbols
+    IValidation: Symbol.for("IValidation"),
+    LoggerService: Symbol.for("LoggerService"),
+}

@@ -1,0 +1,8 @@
+import {{name}} from '../../Entities/{{type}}';
+
+export interface {{type}}Repository {
+    persist({{name}}: {{type}}): Promise<void>;
+    findOneById(id: number): Promise<{{type}}>;
+    findAll(page: number, size: number): Promise<{{type}}[]>;
+    delete({{name}}: {{type}}): Promise<void>;
+}

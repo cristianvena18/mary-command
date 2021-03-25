@@ -1,0 +1,162 @@
+import { NextFunction, Request, Response } from "express";
+import NotFoundException from "{{presentation_exceptions_path}}/NotFoundException";
+import InternalErrorException from "{{presentation_exceptions_path}}/InternalErrorException";
+import BadRequestException from "{{presentation_exceptions_path}}/BadRequestException";
+import AuthorizationException from "{{presentation_exceptions_path}}/AuthorizationException";
+import UnprocessableEntityException from "{{presentation_exceptions_path}}/UnprocessableEntityException";
+import AuthenticationException from "{{presentation_exceptions_path}}/AuthenticationException";
+import ForeignKeyConstraintException from "{{presentation_exceptions_path}}/ForeignKeyConstraintException";
+
+import { error } from "./customResponse";
+import { HTTP_CODES } from "{{http_codes_path}}/HttpCodes";
+import { codeErrors } from "{{error_messages_path}}/ErrorMessages";
+import DIContainer from "{{di_path}}/di.config";
+import { LoggerService } from "{{services_path}}/LoggerService";
+import { LogLevels } from "{{log_levels_path}}";
+import { INTERFACES } from "{{di_path}}/interfaces.types";
+
+import EntityNotFoundException from "{{application_exceptions_path}}/EntityNotFoundException";
+import ValidationException from "{{application_exceptions_path}}/ValidationException";
+import AuthorizationFailed from "{{application_exceptions_path}}/AuthorizationFailed";
+import AuthenticationFailed from "{{application_exceptions_path}}/AuthenticationFailed";
+import ForeignKeyConstraintFailed from "{{application_exceptions_path}}/ForeignKeyConstraintFailed";
+import RelatedEntitiesConstraintFailed from "{{application_exceptions_path}}/RelatedEntitiesConstraintFailed";
+import CannotPasswordMatch from "{{application_exceptions_path}}/CannotPasswordMatch";
+import EmailAlreadyExist from "{{application_exceptions_path}}/EmailAlreadyExist";
+
+const reportExceptions = (constructor) => {
+  let list = [
+    InternalErrorException.name,
+    AuthorizationException.name,
+    AuthenticationException.name,
+  ];
+  return list.includes(constructor);
+};
+
+export const logErrors = (
+  e: any,
+  _request: Request,
+  _response: Response,
+  next: NextFunction
+) => {
+  const logger = DIContainer.get<LoggerService>(INTERFACES.LoggerService);
+
+  if (reportExceptions(e.name)) {
+    logger.report(LogLevels.ERROR, e.stack);
+  } else {
+    logger.log(LogLevels.ERROR, e.stack);
+  }
+
+  return next(e);
+};
+
+export const mapApplicationToHTTPErrors = async (
+  e: any,
+  _request: Request,
+  _response: Response,
+  next: NextFunction
+) => {
+  switch (e.constructor) {
+    case EntityNotFoundException:
+      e = new NotFoundException(
+        e.message,
+        HTTP_CODES.NOT_FOUND,
+        codeErrors.HTTP.NOT_FOUND.code,
+        codeErrors.HTTP.NOT_FOUND.href
+      );
+      return next(e);
+    case ValidationException:
+      if (JSON.parse(e.message).type === "BadRequestException") {
+        e = new BadRequestException(
+          e.message,
+          HTTP_CODES.BAD_REQUEST,
+          codeErrors.HTTP.BAD_REQUEST.code,
+          codeErrors.HTTP.BAD_REQUEST.href
+        );
+        return next(e);
+      }
+      e = new UnprocessableEntityException(
+        e.message,
+        HTTP_CODES.UNPROCESSABLE_ENTITY,
+        codeErrors.HTTP.UNPROCESSABLE_ENTITY.code,
+        codeErrors.HTTP.UNPROCESSABLE_ENTITY.href
+      );
+      return next(e);
+    case AuthorizationFailed:
+      e = new AuthorizationException(
+        e.message,
+        HTTP_CODES.UNAUTHORIZED,
+        codeErrors.HTTP.UNAUTHORIZED.code,
+        codeErrors.HTTP.UNAUTHORIZED.href
+      );
+      return next(e);
+    case CannotPasswordMatch:
+      e = new AuthorizationException(
+        e.message,
+        HTTP_CODES.BAD_REQUEST,
+        codeErrors.HTTP.BAD_REQUEST.code,
+        codeErrors.HTTP.BAD_REQUEST.href
+      );
+      return next(e);
+    case EmailAlreadyExist:
+      e = new BadRequestException(
+        e.message,
+        HTTP_CODES.BAD_REQUEST,
+        codeErrors.HTTP.BAD_REQUEST.code,
+        codeErrors.HTTP.BAD_REQUEST.href
+      );
+      return next(e);
+    case AuthenticationFailed:
+      e = new AuthenticationException(
+        e.message,
+        HTTP_CODES.FORBIDDEN,
+        codeErrors.HTTP.FORBIDDEN.code,
+        codeErrors.HTTP.FORBIDDEN.href
+      );
+      return next(e);
+    case ForeignKeyConstraintFailed:
+      e = new ForeignKeyConstraintException(
+        e.message,
+        HTTP_CODES.CONFLICT,
+        codeErrors.HTTP.FOREIGN_KEY_CONSTRAINT_ERROR.code,
+        codeErrors.HTTP.FOREIGN_KEY_CONSTRAINT_ERROR.href
+      );
+      return next(e);
+    default:
+      e = new InternalErrorException(
+        e.message,
+        HTTP_CODES.INTERNAL_ERROR,
+        codeErrors.HTTP.INTERNAL_ERROR.code,
+        codeErrors.HTTP.INTERNAL_ERROR.href
+      );
+      return next(e);
+  }
+};
+
+export const execute = async (
+  e: any,
+  _request: Request,
+  response: Response,
+  _next: NextFunction
+) => {
+  try {
+    return response
+      .status(e.status)
+      .json(error(e.name, JSON.parse(e.message), e.type, e.href));
+  } catch (e) {
+    return response.status(500).json(
+      error(
+        e.name,
+        JSON.parse(
+          JSON.stringify({
+            errors: {
+              default: { field: "default", message: "default" },
+            },
+          })
+        ),
+        e.type,
+        e.href
+      )
+    );
+  }
+};

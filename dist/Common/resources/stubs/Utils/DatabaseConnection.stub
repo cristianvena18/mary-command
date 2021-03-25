@@ -1,0 +1,30 @@
+import { ConfigVariables } from "./Config/ConfigVariables";
+import { ProductionConfig } from "./Config/ProductionConfig";
+import { TestingConfig } from "./Config/TestingConfig";
+import { DevelopmentConfig } from "./Config/DevelopmentConfig";
+import { createConnection } from "typeorm";
+import {
+  isTesting,
+  isDevelopment,
+  isProduction,
+  getMode,
+} from "../../Config/mode";
+
+export default class DatabaseConnection {
+  public async getConnection(): Promise<void> {
+    console.log(`Mode: ${getMode()}`);
+    console.log(`Host: ${ConfigVariables().db_host}`);
+
+    if (isProduction()) {
+      await createConnection(ProductionConfig());
+    } else if (isDevelopment()) {
+      await createConnection(DevelopmentConfig()).catch((err) =>
+        console.log("Development Mode: " + err)
+      );
+    } else if (isTesting()) {
+      await createConnection(TestingConfig());
+    } else {
+      throw new Error("Not found connection db with current credentials");
+    }
+  }
+}

@@ -1,0 +1,25 @@
+import { INTERFACES } from './interfaces.types';
+import { Container } from 'inversify';
+import Router from './{{router_path}}';
+import { ValidationService } from './{{validation_interface_path}}';
+import JoiValidationService from './{{validation_service_path}}';
+import { LoggerService } from './{{logger_interface_path}}';
+import { WinstonLoggerService } from './{{logger_service_path}}';
+
+const DIContainer = new Container();
+
+DIContainer.bind(Router).toSelf();
+
+//Actions
+
+//Adapters
+
+//Handlers
+
+//Services
+DIContainer.bind<ValidationService>(INTERFACES.IValidation).to(JoiValidationService);
+DIContainer.bind<LoggerService>(INTERFACES.LoggerService).to(WinstonLoggerService);
+
+//Repositories
+
+export default DIContainer;

@@ -1,0 +1,34 @@
+import { injectable, inject } from 'inversify';
+import {{action}}Query from "../../../../Application/Queries/Query/{{grouping}}/{{action}}Query";
+import {ValidationService} from "../../Validations/Utils/ValidationService";
+import INTERFACES from "../../../../Infrastructure/DI/interfaces.types";
+import ValidationException from "../../../../Application/Exception/ValidationException";
+
+@injectable()
+class {{action}}Adapter
+{
+    private validatorService: ValidationService;
+
+    public constructor(@inject(INTERFACES.IValidation) validatorService: ValidationService)
+    {
+        this.validatorService = validatorService;
+    }
+
+    /**
+     * Adapt a http request to an application's layer input
+     * @return {{action}}Query
+     * @throws InvalidBodyException
+     */
+    public adapt(body: any): {{action}}Query
+    {
+        const error = this.validatorService.validate(body, {});
+
+        if (error){
+            throw new ValidationException(JSON.stringify(this.validatorService.validationResult(error.details)));
+        }
+
+        return new {{action}}Query();
+    }
+}
+
+export default {{action}}Adapter;

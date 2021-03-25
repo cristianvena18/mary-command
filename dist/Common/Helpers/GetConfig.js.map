@@ -1,0 +1,1 @@
+{"version":3,"file":"GetConfig.js","sourceRoot":"","sources":["../../../src/Common/Helpers/GetConfig.ts"],"names":[],"mappings":";;;AACA,gCAA2B;AAEpB,IAAM,SAAS,GAAG;IACvB,IAAM,WAAW,GAAG,cAAI,CAAC,QAAQ,CAC5B,cAAI,CAAC,uBAAuB,EAAE,iBAAc,CAChD,CAAC;IACF,OAAO,IAAI,CAAC,KAAK,CAAC,WAAW,CAAC,CAAC;AACjC,CAAC,CAAC;AALW,QAAA,SAAS,aAKpB"}

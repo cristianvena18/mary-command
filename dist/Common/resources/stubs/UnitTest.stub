@@ -1,0 +1,7 @@
+class {{action}}Test {
+    public constructor() {
+
+    }
+}
+
+export default {{action}}Test;

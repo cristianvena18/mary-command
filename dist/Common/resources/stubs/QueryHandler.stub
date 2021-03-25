@@ -1,0 +1,21 @@
+import HandlerInterface from '../../../../Infrastructure/QueryBus/Handler/IHandler';
+import {{action}}Query from '../../../Queries/Query/{{grouping}}/{{action}}Query';
+import {{action}}Result from '../../../Queries/Results/{{grouping}}/{{action}}Result';
+import { injectable, inject } from 'inversify';
+
+@injectable()
+class {{action}}Handler implements HandlerInterface
+{
+    /**
+     * Execute the given query and return a result
+     *
+     * @param  query
+     * @return {{action}}Result
+     */
+    public async execute(query: {{action}}Query): Promise<{{action}}Result>
+    {
+        return new {{action}}Result();
+    }
+}
+
+export default {{action}}Handler;
