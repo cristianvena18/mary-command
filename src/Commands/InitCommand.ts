@@ -288,6 +288,10 @@ export class InitCommand implements yargs.CommandModule {
     appStub = appStub.replace(/{{routes_path}}/gi, "routes");
 
     file.writeFile(`${file.getCurrentDirectoryBase()}/src/App.ts`, appStub);
+    file.writeFile(
+      `${file.getCurrentDirectoryBase()}/package.json`,
+      InitCommand.getNodePackageTemplate()
+    );
   }
 
   private static createOnionFolders(cqrs: boolean) {
@@ -615,6 +619,11 @@ export class InitCommand implements yargs.CommandModule {
     appStub = appStub.replace(/{{di_path}}/gi, "Infrastructure/DI/di.config");
 
     file.writeFile(`${file.getCurrentDirectoryBase()}/src/App.ts`, appStub);
+
+    file.writeFile(
+      `${file.getCurrentDirectoryBase()}/package.json`,
+      InitCommand.getNodePackageTemplate()
+    );
   }
 
   private static createConfigFile(type: string, cqrs: boolean, dir: string) {
@@ -627,31 +636,6 @@ export class InitCommand implements yargs.CommandModule {
     const content = InitCommand.getConfigContentFromType(type, cqrs);
 
     file.writeFile(filePath, JSON.stringify(content, undefined, 3));
-
-    const ormFile = path.join(
-      file.getCurrentDirectoryBase(),
-      dir,
-      `/ormconfig.json`
-    );
-
-    const ormContent = {
-      type: "mysql",
-      host: "localhost",
-      port: 3306,
-      username: "test",
-      password: "test",
-      database: "test",
-      synchronize: true,
-      logging: false,
-      entities: ["src/App/Models/**/*.ts"],
-      migrations: ["src/database/migrations/**/*.ts"],
-      cli: {
-        entitiesDir: "src/App/Models",
-        migrationsDir: "src/database/migrations",
-      },
-    };
-
-    file.writeFile(ormFile, JSON.stringify(ormContent, undefined, 3));
   }
 
   private static getConfigContentFromType(type: string, cqrs: boolean): Config {
@@ -778,5 +762,56 @@ export class InitCommand implements yargs.CommandModule {
         file.readFile(file.resource_path(`/stubs/Exceptions/${exception}.stub`))
       );
     }
+  }
+
+  private static getNodePackageTemplate() {
+    return JSON.stringify(
+      {
+        name: "server",
+        version: "1.0.0",
+        main: "index.js",
+        license: "MIT",
+        scripts: {
+          "make:usecase": "node ./commands/generators",
+          start: 'nodemon -e ts --exec "yarn run dev:transpile"',
+          "dev:transpile":
+            "tsc && node --unhandled-rejections=strict --inspect=0.0.0.0 dist/server.js",
+          "prettier:run": "yarn prettier --write src/**/*.ts",
+          "make:migration":
+            "yarn typeorm migration:create -d ./src/Infrastructure/Persistence/Migrations -n",
+          "CI:test": "exit 0",
+        },
+        dependencies: {
+          "cookie-parser": "^1.4.5",
+          cors: "^2.8.5",
+          express: "^4.17.1",
+          helmet: "^4.4.1",
+          inversify: "^5.0.5",
+          joi: "^17.3.0",
+          jsonwebtoken: "^8.5.1",
+          "reflect-metadata": "^0.1.13",
+          typeorm: "^0.2.30",
+          morgan: "^1.10.0",
+          mysql: "^2.18.1",
+        },
+        devDependencies: {
+          "@types/express": "^4.17.11",
+          "@types/node": "^14.14.21",
+          "@types/jsonwebtoken": "^8.5.0",
+          husky: "^4.3.8",
+          nodemon: "^2.0.7",
+          prettier: "^2.2.1",
+          "ts-node": "^9.1.1",
+          typescript: "^4.1.3",
+        },
+        husky: {
+          hooks: {
+            "pre-commit": "yarn prettier:run && git add -A",
+          },
+        },
+      },
+      undefined,
+      3
+    );
   }
 }
