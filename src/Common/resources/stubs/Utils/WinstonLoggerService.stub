@@ -1,7 +1,7 @@
 import { inject, injectable } from "inversify";
-import { LoggerService } from "../../../{{interface_path}}";
+import { LoggerService } from "{{interface_path}}";
 import { createLogger, format, Logger, transports } from "winston";
-import { LogLevels } from "../../../{{log_levels_path}}";
+import { LogLevels } from "{{log_levels_path}}";
 
 /**
  * A simple logger that allow multiple transports

@@ -112,6 +112,14 @@ export class InitCommand implements yargs.CommandModule {
             file.readFile(file.resource_path('/stubs/Utils/ErrorMessages.stub'))
         );
 
+        let loggerStub = file.readFile(file.resource_path('/stubs/Utils/WinstonLoggerService.stub')) //TODO: add dependencies
+        loggerStub = loggerStub.replace(/{{interface_path}}/gi, './LoggerService');
+        loggerStub = loggerStub.replace(/{{log_levels_path}}/gi, '../Enums/LogLevels');
+
+        file.writeFile(`${file.getCurrentDirectoryBase()}/src/App/Services/WinstonLoggerService.ts`, loggerStub);
+        file.writeFile(`${file.getCurrentDirectoryBase()}/src/App/Services/LoggerService.ts`,
+            file.readFile(file.resource_path(`/stubs/Utils/LoggerService.stub`)));
+
         file.makeDirectory(
             path.join(file.getCurrentDirectoryBase(), `/src/App/Repositories`)
         );
@@ -179,9 +187,17 @@ export class InitCommand implements yargs.CommandModule {
         file.makeDirectory(
             `${file.getCurrentDirectoryBase()}/src/App/Debug`
         );
+        let errorHandlerStub = file.readFile(file.resource_path('/stubs/Utils/ErrorHandler.stub')) //TODO: add dependencies
+        errorHandlerStub = errorHandlerStub.replace(/{{application_exceptions_path}}/gi, '../Exceptions');
+        errorHandlerStub = errorHandlerStub.replace(/{{presentation_exceptions_path}}/gi, '../Exceptions');
+        errorHandlerStub = errorHandlerStub.replace(/{{di_path}}/gi, '../DI');
+        errorHandlerStub = errorHandlerStub.replace(/{{log_levels_path}}/gi, '../Enums/LogLevels');
+        errorHandlerStub = errorHandlerStub.replace(/{{services_path}}/gi, '../Services/Logger');
+        errorHandlerStub = errorHandlerStub.replace(/{{error_messages_path}}/gi, '../Services/Validation/');
+
         file.writeFile(
             `${file.getCurrentDirectoryBase()}/src/App/Debug/ErrorHandler.ts`,
-            file.readFile(file.resource_path('/stubs/Utils/ErrorHandler.stub')) //TODO: add dependencies
+            errorHandlerStub
         );
         file.writeFile(
             `${file.getCurrentDirectoryBase()}/src/App/Debug/customResponse.ts`,
@@ -354,9 +370,13 @@ export class InitCommand implements yargs.CommandModule {
             file.readFile(file.resource_path('/stubs/Utils/TypeRepository.stub'))
         );
 
+        let loggerStub = file.readFile(file.resource_path('/stubs/Utils/WinstonLoggerService.stub')) //TODO: add dependencies
+        loggerStub = loggerStub.replace(/{{interface_path}}/gi, '../../../Domain/Interfaces/Services/LoggerService');
+        loggerStub = loggerStub.replace(/{{log_levels_path}}/gi, '../../../Domain/Enums/LogLevels');
+
         file.writeFile(
             `${file.getCurrentDirectoryBase()}/src/Infrastructure/Logger/Providers/WinstonLoggerService.ts`,
-            file.readFile(file.resource_path('/stubs/Utils/WinstonLoggerService.stub')) //TODO: add dependencies
+            loggerStub
         );
 
         file.makeDirectory(
@@ -402,9 +422,17 @@ export class InitCommand implements yargs.CommandModule {
             file.readFile(file.resource_path('/stubs/Utils/interfaces.types.stub'))
         );
 
+        let errorHandlerStub = file.readFile(file.resource_path('/stubs/Utils/ErrorHandler.stub'))
+        errorHandlerStub = errorHandlerStub.replace(/{{application_exceptions_path}}/gi, '../../../Presentation/Http/Exceptions');
+        errorHandlerStub = errorHandlerStub.replace(/{{presentation_exceptions_path}}/gi, '../../../Application/Exceptions');
+        errorHandlerStub = errorHandlerStub.replace(/{{di_path}}/gi, '../DI');
+        errorHandlerStub = errorHandlerStub.replace(/{{log_levels_path}}/gi, '../../../Domain/Enums/LogLevels');
+        errorHandlerStub = errorHandlerStub.replace(/{{services_path}}/gi, '../../../Domain/Interfaces/Services');
+        errorHandlerStub = errorHandlerStub.replace(/{{error_messages_path}}/gi, '../../../Presentation/Http/Validations/Utils');
+
         file.writeFile(
-            `${file.getCurrentDirectoryBase()}/src/Infrastructure/Debug/ErrorHandler.ts`,
-            file.readFile(file.resource_path('/stubs/Utils/ErrorHandler.stub')) //TODO: add dependencies
+            `${file.getCurrentDirectoryBase()}/src/App/Debug/ErrorHandler.ts`,
+            errorHandlerStub
         );
         file.writeFile(
             `${file.getCurrentDirectoryBase()}/src/Infrastructure/Debug/customResponse.ts`,

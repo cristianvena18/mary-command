@@ -8,7 +8,7 @@ import AuthenticationException from "{{presentation_exceptions_path}}/Authentica
 import ForeignKeyConstraintException from "{{presentation_exceptions_path}}/ForeignKeyConstraintException";
 
 import { error } from "./customResponse";
-import { HTTP_CODES } from "{{http_codes_path}}/HttpStatuses";
+import { HTTP_CODES } from "{{http_codes_path}}/HttpCodes";
 import { codeErrors } from "{{error_messages_path}}/ErrorMessages";
 import DIContainer from "{{di_path}}/di.config.ts";
 import { LoggerService } from "{{services_path}}/LoggerService";
