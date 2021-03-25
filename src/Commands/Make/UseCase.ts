@@ -40,6 +40,11 @@ export class MakeUseCase implements yargs.CommandModule {
     const attributes: string = args.parameters as any;
 
     const config = getConfig();
+    if (config.type === 'default') {
+      console.error('Not supported for your config!');
+      process.exit(1);
+    }
+
     const isCommand = useCaseType === "c";
 
     const actionFilePath = MakeUseCase.buildActionFilePath(

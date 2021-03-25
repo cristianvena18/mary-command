@@ -1,0 +1,19 @@
+import { Router } from "express";
+import { inject, injectable } from "inversify";
+
+@injectable()
+class PublicRoutes {
+  private router: Router;
+  constructor() {
+    this.router = Router();
+    this.setRoutes();
+  }
+
+  public getRoutes() {
+    return this.router;
+  }
+
+  private setRoutes() {}
+}
+
+export default PublicRoutes;

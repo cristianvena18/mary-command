@@ -8,7 +8,7 @@
   "author": "cristianvena18 <cristiandamianvena@gmail.com>",
   "license": "ISC",
   "scripts": {
-    "build": "yarn tsc && cp -r ./src/Common/resources ./dist/Common/resources"
+    "build": "yarn tsc && cp -r ./src/Common/resources ./dist/Common"
   },
   "dependencies": {
     "@types/yargs": "^15.0.4",

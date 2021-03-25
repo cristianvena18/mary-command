@@ -1,0 +1,17 @@
+import ApplicationException from "./ApplicationException";
+import { ErrorValues } from "../../Domain/Enums/ErrorsKeys";
+
+export default class EmailAlreadyExist extends ApplicationException {
+  public constructor(message: string = ErrorValues.user.emailAlreadyExist) {
+    const errorMessage = {
+      errors: {
+        email: {
+          message,
+          field: "email",
+        },
+      },
+    };
+
+    super(EmailAlreadyExist.name, JSON.stringify(errorMessage));
+  }
+}

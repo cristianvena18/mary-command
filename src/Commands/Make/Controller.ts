@@ -66,6 +66,4 @@ export class MakeController implements yargs.CommandModule {
   private static fileSystemPut(filePath: string, fileClass: string) {
     file.writeFile(filePath, fileClass);
   }
-
-  private static getConfig() {}
 }
