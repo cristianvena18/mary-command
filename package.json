@@ -1,9 +1,9 @@
 {
-  "name": "mary-command",
+  "name": "clode",
   "version": "0.1.0",
   "description": "Bootstrapping node app for backend and CLI for create classes",
   "bin": {
-    "mary-command": "./index.js"
+    "clode": "./index.js"
   },
   "author": "cristianvena18 <cristiandamianvena@gmail.com>",
   "license": "ISC",
