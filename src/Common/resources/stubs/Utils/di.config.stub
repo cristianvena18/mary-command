@@ -1,10 +1,10 @@
 import { INTERFACES } from './interfaces.types';
 import { Container } from 'inversify';
 import Router from './{{router_path}}';
-import ValidationService from './{{validation_interface_path}}';
+import { ValidationService } from './{{validation_interface_path}}';
 import JoiValidationService from './{{validation_service_path}}';
-import LoggerService from './{{logger_interface_path}}';
-import WinstonLoggerService from './{{logger_service_path}}';
+import { LoggerService } from './{{logger_interface_path}}';
+import { WinstonLoggerService } from './{{logger_service_path}}';
 
 const DIContainer = new Container();
 

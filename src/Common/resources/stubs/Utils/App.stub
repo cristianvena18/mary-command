@@ -9,6 +9,8 @@ import dotenv from "dotenv";
 import PublicRoutes from "./{{routes_path}}";
 import DatabaseConnection from "./{{database_connection_path}}";
 import * as errorHandler from "./{{error_handler_path}}";
+import DIContainer from "./{{di_path}}";
+
 
 @injectable()
 export default class App {

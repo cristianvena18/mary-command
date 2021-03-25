@@ -135,6 +135,7 @@ export class InitCommand implements yargs.CommandModule {
             `${file.getCurrentDirectoryBase()}/src/App/Enums/HttpCodes.ts`,
             file.readFile(file.resource_path('/stubs/Utils/HttpCodes.stub'))
         );
+        file.makeDirectory(`${file.getCurrentDirectoryBase()}/src/App/Enums`)
         file.writeFile(
             `${file.getCurrentDirectoryBase()}/src/App/Enums/LogLevels.ts`,
             file.readFile(file.resource_path('/stubs/Utils/LogLevels.stub'))
@@ -275,6 +276,13 @@ export class InitCommand implements yargs.CommandModule {
         );
 
         file.makeDirectory(
+            `${file.getCurrentDirectoryBase()}/src/Presentation/Http/Enums`
+        );
+        file.writeFile(
+            `${file.getCurrentDirectoryBase()}/src/Presentation/Http/Enums/HttpCodes.ts`,
+            file.readFile(file.resource_path('/stubs/Utils/HttpCodes.stub'))
+        );
+        file.makeDirectory(
             `${file.getCurrentDirectoryBase()}/src/Presentation/Http/Validations/Utils`
         );
         file.writeFile(
@@ -353,6 +361,9 @@ export class InitCommand implements yargs.CommandModule {
             file.readFile(file.resource_path('/stubs/Utils/LoggerService.stub'))
         );
 
+        file.makeDirectory(
+            `${file.getCurrentDirectoryBase()}/src/Domain/Enums`)
+
         file.writeFile(
             `${file.getCurrentDirectoryBase()}/src/Domain/Enums/LogLevels.ts`,
             file.readFile(file.resource_path('/stubs/Utils/LogLevels.stub'))
@@ -374,6 +385,7 @@ export class InitCommand implements yargs.CommandModule {
         loggerStub = loggerStub.replace(/{{interface_path}}/gi, '../../../Domain/Interfaces/Services/LoggerService');
         loggerStub = loggerStub.replace(/{{log_levels_path}}/gi, '../../../Domain/Enums/LogLevels');
 
+        file.makeDirectory(`${file.getCurrentDirectoryBase()}/src/Infrastructure/Logger/Providers`)
         file.writeFile(
             `${file.getCurrentDirectoryBase()}/src/Infrastructure/Logger/Providers/WinstonLoggerService.ts`,
             loggerStub
@@ -381,6 +393,9 @@ export class InitCommand implements yargs.CommandModule {
 
         file.makeDirectory(
             `${file.getCurrentDirectoryBase()}/src/Infrastructure/Persistence/Migrations`
+        );
+        file.makeDirectory(
+            `${file.getCurrentDirectoryBase()}/src/Infrastructure/Persistence/Config`
         );
         file.writeFile(
             `${file.getCurrentDirectoryBase()}/src/Infrastructure/Persistence/DatabaseConnection.ts`,
@@ -423,20 +438,31 @@ export class InitCommand implements yargs.CommandModule {
         );
 
         let errorHandlerStub = file.readFile(file.resource_path('/stubs/Utils/ErrorHandler.stub'))
-        errorHandlerStub = errorHandlerStub.replace(/{{application_exceptions_path}}/gi, '../../../Presentation/Http/Exceptions');
-        errorHandlerStub = errorHandlerStub.replace(/{{presentation_exceptions_path}}/gi, '../../../Application/Exceptions');
+        errorHandlerStub = errorHandlerStub.replace(/{{application_exceptions_path}}/gi, '../../Application/Exceptions');
+        errorHandlerStub = errorHandlerStub.replace(/{{presentation_exceptions_path}}/gi, '../../Presentation/Http/Exceptions');
         errorHandlerStub = errorHandlerStub.replace(/{{di_path}}/gi, '../DI');
-        errorHandlerStub = errorHandlerStub.replace(/{{log_levels_path}}/gi, '../../../Domain/Enums/LogLevels');
-        errorHandlerStub = errorHandlerStub.replace(/{{services_path}}/gi, '../../../Domain/Interfaces/Services');
-        errorHandlerStub = errorHandlerStub.replace(/{{error_messages_path}}/gi, '../../../Presentation/Http/Validations/Utils');
+        errorHandlerStub = errorHandlerStub.replace(/{{http_codes_path}}/gi, '../../Presentation/Http/Enums');
+        errorHandlerStub = errorHandlerStub.replace(/{{log_levels_path}}/gi, '../../Domain/Enums/LogLevels');
+        errorHandlerStub = errorHandlerStub.replace(/{{services_path}}/gi, '../../Domain/Interfaces/Services');
+        errorHandlerStub = errorHandlerStub.replace(/{{error_messages_path}}/gi, '../../Presentation/Http/Validations/Utils');
 
+        file.makeDirectory(
+            `${file.getCurrentDirectoryBase()}/src/Infrastructure/Debug`
+        );
         file.writeFile(
-            `${file.getCurrentDirectoryBase()}/src/App/Debug/ErrorHandler.ts`,
+            `${file.getCurrentDirectoryBase()}/src/Infrastructure/Debug/ErrorHandler.ts`,
             errorHandlerStub
         );
         file.writeFile(
             `${file.getCurrentDirectoryBase()}/src/Infrastructure/Debug/customResponse.ts`,
             file.readFile(file.resource_path('/stubs/Utils/customResponse.stub'))
+        );
+        file.makeDirectory(
+            `${file.getCurrentDirectoryBase()}/src/Config`
+        );
+        file.writeFile(
+            `${file.getCurrentDirectoryBase()}/src/Config/mode.ts`,
+            file.readFile(file.resource_path('/stubs/Utils/ConfigModes.stub'))
         );
 
         /**
@@ -451,15 +477,18 @@ export class InitCommand implements yargs.CommandModule {
             `${file.getCurrentDirectoryBase()}/.env`,
             InitCommand.createEnvironmentFiles()
         );
+        let serverStub =file.readFile(file.resource_path('/stubs/Utils/server.stub'));
+        serverStub = serverStub.replace(/{{di_path}}/gi, 'Infrastructure/DI/di.config')
 
         file.writeFile(
             `${file.getCurrentDirectoryBase()}/src/server.ts`,
-            file.readFile(file.resource_path('/stubs/Utils/server.stub'))
+            serverStub
         );
         let appStub = file.readFile(file.resource_path('/stubs/Utils/App.stub'));
         appStub = appStub.replace(/{{database_connection_path}}/gi, 'Infrastructure/Persistence/DatabaseConnection');
         appStub = appStub.replace(/{{error_handler_path}}/gi, 'Infrastructure/Debug/ErrorHandler');
         appStub = appStub.replace(/{{routes_path}}/gi, 'Presentation/Http/Routes');
+        appStub = appStub.replace(/{{di_path}}/gi, 'Infrastructure/DI/di.config');
 
         file.writeFile(
             `${file.getCurrentDirectoryBase()}/src/App.ts`,

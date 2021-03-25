@@ -7,7 +7,7 @@ import { LogLevels } from "{{log_levels_path}}";
  * A simple logger that allow multiple transports
  */
 @injectable()
-export class WinstonLogger implements LoggerService {
+export class WinstonLoggerService implements LoggerService {
   private logger: Logger;
 
   private readonly logFormatCommon = format.printf(function (info): string {

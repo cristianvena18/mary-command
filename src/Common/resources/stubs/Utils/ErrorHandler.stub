@@ -10,7 +10,7 @@ import ForeignKeyConstraintException from "{{presentation_exceptions_path}}/Fore
 import { error } from "./customResponse";
 import { HTTP_CODES } from "{{http_codes_path}}/HttpCodes";
 import { codeErrors } from "{{error_messages_path}}/ErrorMessages";
-import DIContainer from "{{di_path}}/di.config.ts";
+import DIContainer from "{{di_path}}/di.config";
 import { LoggerService } from "{{services_path}}/LoggerService";
 import { LogLevels } from "{{log_levels_path}}";
 import { INTERFACES } from "{{di_path}}/interfaces.types";
