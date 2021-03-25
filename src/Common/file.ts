@@ -3,7 +3,7 @@ import * as fs from "fs";
 
 class FileManager {
   public getCurrentDirectoryBase() {
-    return process.cwd() + '/';
+    return process.cwd() + "/";
   }
 
   public directoryExists(filePath) {
@@ -39,10 +39,15 @@ class FileManager {
   public isDirectory(path) {
     return fs.existsSync(path);
   }
+
   public makeDirectory(filePath) {
     fs.mkdirSync(filePath, {
       recursive: true,
     });
+  }
+
+  public copy(from: string, to: string) {
+    fs.copyFileSync(from, to);
   }
 }
 

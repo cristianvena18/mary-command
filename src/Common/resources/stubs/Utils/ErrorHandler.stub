@@ -21,7 +21,7 @@ import AuthorizationFailed from "{{application_exceptions_path}}/AuthorizationFa
 import AuthenticationFailed from "{{application_exceptions_path}}/AuthenticationFailed";
 import ForeignKeyConstraintFailed from "{{application_exceptions_path}}/ForeignKeyConstraintFailed";
 import RelatedEntitiesConstraintFailed from "{{application_exceptions_path}}/RelatedEntitiesConstraintFailed";
-import { CannotPasswordMatch } from "{{application_exceptions_path}}/CannotPasswordMatch";
+import CannotPasswordMatch from "{{application_exceptions_path}}/CannotPasswordMatch";
 import EmailAlreadyExist from "{{application_exceptions_path}}/EmailAlreadyExist";
 
 const reportExceptions = (constructor) => {
