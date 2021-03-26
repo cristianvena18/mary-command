@@ -10,11 +10,6 @@ export class InitCommand implements yargs.CommandModule {
 
   builder(args: yargs.Argv) {
     return args
-      .option("d", {
-        alias: "dir",
-        default: ".",
-        describe: "path dir of start connection",
-      })
       .option("t", {
         alias: "type",
         default: "default",
@@ -29,9 +24,7 @@ export class InitCommand implements yargs.CommandModule {
   }
 
   handler(args: yargs.Arguments): void {
-    const dir = args.dir as string;
-
-    const projectExist = InitCommand.checkIfExistAnyProject(dir);
+    const projectExist = InitCommand.checkIfExistAnyProject();
 
     if (projectExist) {
       const hasProjectScaffolding = InitCommand.checkIfScaffoldingExist();
@@ -46,21 +39,17 @@ export class InitCommand implements yargs.CommandModule {
 
     if (type === "default") {
       InitCommand.createAppFolder();
-      InitCommand.createConfigFile("default", false, dir);
+      InitCommand.createConfigFile("default", false);
     } else {
       InitCommand.createOnionFolders(cqrs === "yes");
-      InitCommand.createConfigFile("onion", cqrs === "yes", dir);
+      InitCommand.createConfigFile("onion", cqrs === "yes");
     }
 
     InitCommand.createEnvironmentFiles();
   }
 
-  private static checkIfExistAnyProject(dir: string) {
-    const _path = path.join(
-      file.getCurrentDirectoryBase(),
-      dir,
-      `/package.json`
-    );
+  private static checkIfExistAnyProject() {
+    const _path = path.join(file.getCurrentDirectoryBase(), `/package.json`);
 
     return file.directoryExists(_path);
   }
@@ -634,12 +623,8 @@ export class InitCommand implements yargs.CommandModule {
     );
   }
 
-  private static createConfigFile(type: string, cqrs: boolean, dir: string) {
-    const filePath = path.join(
-      file.getCurrentDirectoryBase(),
-      dir,
-      `/config.json`
-    );
+  private static createConfigFile(type: string, cqrs: boolean) {
+    const filePath = path.join(file.getCurrentDirectoryBase(), `/config.json`);
 
     const content = InitCommand.getConfigContentFromType(type, cqrs);
 
