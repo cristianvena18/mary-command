@@ -1,4 +1,4 @@
-import { LogLevels } from "../../Enums/LogLevels";
+import { LogLevels } from "{{log_levels_path}}";
 
 export interface LoggerService {
   log(level: LogLevels, message: string): void;

@@ -75,6 +75,10 @@ export class InitCommand implements yargs.CommandModule {
       path.join(file.getCurrentDirectoryBase(), `/src/App/Services`)
     );
 
+    file.makeDirectory(
+      path.join(file.getCurrentDirectoryBase(), "src/App/Services/Validation")
+    );
+
     file.writeFile(
       `${file.getCurrentDirectoryBase()}/src/App/Services/Validation/JoiValidationService.ts`,
       file.readFile(
@@ -100,16 +104,28 @@ export class InitCommand implements yargs.CommandModule {
     loggerStub = loggerStub.replace(/{{interface_path}}/gi, "./LoggerService");
     loggerStub = loggerStub.replace(
       /{{log_levels_path}}/gi,
-      "../Enums/LogLevels"
+      "../../Enums/LogLevels"
+    );
+
+    file.makeDirectory(
+      path.join(file.getCurrentDirectoryBase(), "src/App/Services/Logger")
     );
 
     file.writeFile(
-      `${file.getCurrentDirectoryBase()}/src/App/Services/WinstonLoggerService.ts`,
+      `${file.getCurrentDirectoryBase()}/src/App/Services/Logger/WinstonLoggerService.ts`,
       loggerStub
     );
+    let loggerInterfaceStub = file.readFile(
+      file.resource_path(`/stubs/Utils/LoggerService.stub`)
+    );
+    loggerInterfaceStub = loggerInterfaceStub.replace(
+      /{{log_levels_path}}/gi,
+      "../../Enums/LogLevels"
+    );
+
     file.writeFile(
-      `${file.getCurrentDirectoryBase()}/src/App/Services/LoggerService.ts`,
-      file.readFile(file.resource_path(`/stubs/Utils/LoggerService.stub`))
+      `${file.getCurrentDirectoryBase()}/src/App/Services/Logger/LoggerService.ts`,
+      loggerInterfaceStub
     );
 
     file.makeDirectory(
@@ -151,10 +167,23 @@ export class InitCommand implements yargs.CommandModule {
       path.join(file.getCurrentDirectoryBase(), `/src/database/migrations`)
     );
 
+    let databaseConnectionStub = file.readFile(
+      file.resource_path("/stubs/Utils/DatabaseConnection.stub")
+    );
+    databaseConnectionStub = databaseConnectionStub.replace(
+      /{{config_path}}/gi,
+      "../config/mode"
+    );
+
     file.writeFile(
       `${file.getCurrentDirectoryBase()}/src/database/DatabaseConnection.ts`,
-      file.readFile(file.resource_path("/stubs/Utils/DatabaseConnection.stub"))
+      databaseConnectionStub
     );
+
+    file.makeDirectory(
+      path.join(file.getCurrentDirectoryBase(), "src/database/Config")
+    );
+
     file.writeFile(
       `${file.getCurrentDirectoryBase()}/src/database/Config/ProductionConfig.ts`,
       file.readFile(
@@ -180,6 +209,12 @@ export class InitCommand implements yargs.CommandModule {
       )
     );
 
+    file.makeDirectory(path.join(file.getCurrentDirectoryBase(), "src/config"));
+    file.writeFile(
+      path.join(file.getCurrentDirectoryBase(), "src/config/mode.ts"),
+      file.readFile(file.resource_path("/stubs/Utils/ConfigModes.stub"))
+    );
+
     file.makeDirectory(`${file.getCurrentDirectoryBase()}/src/App/DI`);
     let diStub = file.readFile(
       file.resource_path("/stubs/Utils/di.config.stub")
@@ -187,7 +222,7 @@ export class InitCommand implements yargs.CommandModule {
     diStub = diStub.replace(/{{router_path}}/gi, "../../routes");
     diStub = diStub.replace(
       /{{validation_interface_path}}/gi,
-      "../Services/ValidationService"
+      "../Services/Validation/ValidationService"
     );
     diStub = diStub.replace(
       /{{logger_interface_path}}/gi,
@@ -195,7 +230,7 @@ export class InitCommand implements yargs.CommandModule {
     );
     diStub = diStub.replace(
       /{{validation_service_path}}/gi,
-      "../Services/JoiValidationService"
+      "../Services/Validation/JoiValidationService"
     );
     diStub = diStub.replace(
       /{{logger_service_path}}/gi,
@@ -235,6 +270,10 @@ export class InitCommand implements yargs.CommandModule {
       /{{error_messages_path}}/gi,
       "../Services/Validation/"
     );
+    errorHandlerStub = errorHandlerStub.replace(
+      /{{http_codes_path}}/gi,
+      "../Enums"
+    );
 
     file.writeFile(
       `${file.getCurrentDirectoryBase()}/src/App/Debug/ErrorHandler.ts`,
@@ -262,17 +301,26 @@ export class InitCommand implements yargs.CommandModule {
       path.join(file.getCurrentDirectoryBase(), `/.env`),
       InitCommand.createEnvironmentFiles()
     );
+    let serverStub = file.readFile(
+      file.resource_path("/stubs/Utils/server.stub")
+    );
+    serverStub = serverStub.replace(/{{di_path}}/gi, "App/DI/di.config");
 
     file.writeFile(
       `${file.getCurrentDirectoryBase()}/src/server.ts`,
-      file.readFile(file.resource_path("/stubs/Utils/server.stub"))
+      serverStub
     );
+
     let appStub = file.readFile(file.resource_path("/stubs/Utils/App.stub"));
     appStub = appStub.replace(
       /{{database_connection_path}}/gi,
       "database/DatabaseConnection"
     );
-    appStub = appStub.replace(/{{error_handler_path}}/gi, "Debug/ErrorHandler");
+    appStub = appStub.replace(
+      /{{error_handler_path}}/gi,
+      "App/Debug/ErrorHandler"
+    );
+    appStub = appStub.replace(/{{di_path}}/gi, "App/DI/di.config");
     appStub = appStub.replace(/{{routes_path}}/gi, "routes");
 
     file.writeFile(`${file.getCurrentDirectoryBase()}/src/App.ts`, appStub);
@@ -414,9 +462,16 @@ export class InitCommand implements yargs.CommandModule {
     file.makeDirectory(
       `${file.getCurrentDirectoryBase()}/src/Domain/Interfaces/Services`
     );
+    let loggerInterfaceStub = file.readFile(
+      file.resource_path("/stubs/Utils/LoggerService.stub")
+    );
+    loggerInterfaceStub = loggerInterfaceStub.replace(
+      /{{log_levels_path}}/gi,
+      "../../Enums/LogLevels"
+    );
     file.writeFile(
       `${file.getCurrentDirectoryBase()}/src/Domain/Interfaces/Services/LoggerService.ts`,
-      file.readFile(file.resource_path("/stubs/Utils/LoggerService.stub"))
+      loggerInterfaceStub
     );
 
     file.makeDirectory(`${file.getCurrentDirectoryBase()}/src/Domain/Enums`);
@@ -464,9 +519,17 @@ export class InitCommand implements yargs.CommandModule {
     file.makeDirectory(
       `${file.getCurrentDirectoryBase()}/src/Infrastructure/Persistence/Config`
     );
+    let databaseConnectionStub = file.readFile(
+      file.resource_path("/stubs/Utils/DatabaseConnection.stub")
+    );
+    databaseConnectionStub = databaseConnectionStub.replace(
+      /{{config_path}}/gi,
+      "../../Config/mode"
+    );
+
     file.writeFile(
       `${file.getCurrentDirectoryBase()}/src/Infrastructure/Persistence/DatabaseConnection.ts`,
-      file.readFile(file.resource_path("/stubs/Utils/DatabaseConnection.stub"))
+      databaseConnectionStub
     );
     file.writeFile(
       `${file.getCurrentDirectoryBase()}/src/Infrastructure/Persistence/Config/ProductionConfig.ts`,
@@ -800,6 +863,7 @@ DEBUG_EMAIL=`;
           typeorm: "^0.2.30",
           morgan: "^1.10.0",
           mysql: "^2.18.1",
+          winston: "^3.3.3",
         },
         devDependencies: {
           "@types/express": "^4.17.11",

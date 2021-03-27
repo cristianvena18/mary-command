@@ -8,7 +8,7 @@ import {
   isDevelopment,
   isProduction,
   getMode,
-} from "../../Config/mode";
+} from "{{config_path}}";
 
 export default class DatabaseConnection {
   public async getConnection(): Promise<void> {

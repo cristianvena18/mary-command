@@ -11,11 +11,6 @@ var InitCommand = /** @class */ (function () {
     }
     InitCommand.prototype.builder = function (args) {
         return args
-            .option("d", {
-            alias: "dir",
-            default: ".",
-            describe: "path dir of start connection",
-        })
             .option("t", {
             alias: "type",
             default: "default",
@@ -28,8 +23,7 @@ var InitCommand = /** @class */ (function () {
         });
     };
     InitCommand.prototype.handler = function (args) {
-        var dir = args.dir;
-        var projectExist = InitCommand.checkIfExistAnyProject(dir);
+        var projectExist = InitCommand.checkIfExistAnyProject();
         if (projectExist) {
             var hasProjectScaffolding = InitCommand.checkIfScaffoldingExist();
             if (hasProjectScaffolding) {
@@ -42,16 +36,16 @@ var InitCommand = /** @class */ (function () {
         var cqrs = args.cqrs;
         if (type === "default") {
             InitCommand.createAppFolder();
-            InitCommand.createConfigFile("default", false, dir);
+            InitCommand.createConfigFile("default", false);
         }
         else {
             InitCommand.createOnionFolders(cqrs === "yes");
-            InitCommand.createConfigFile("onion", cqrs === "yes", dir);
+            InitCommand.createConfigFile("onion", cqrs === "yes");
         }
         InitCommand.createEnvironmentFiles();
     };
-    InitCommand.checkIfExistAnyProject = function (dir) {
-        var _path = path.join(file_1.default.getCurrentDirectoryBase(), dir, "/package.json");
+    InitCommand.checkIfExistAnyProject = function () {
+        var _path = path.join(file_1.default.getCurrentDirectoryBase(), "/package.json");
         return file_1.default.directoryExists(_path);
     };
     InitCommand.checkIfScaffoldingExist = function () {
@@ -63,15 +57,19 @@ var InitCommand = /** @class */ (function () {
         file_1.default.makeDirectory(path.join(file_1.default.getCurrentDirectoryBase(), "/src/App/Http/Controllers"));
         file_1.default.makeDirectory(path.join(file_1.default.getCurrentDirectoryBase(), "/src/App/Http/Middlewares"));
         file_1.default.makeDirectory(path.join(file_1.default.getCurrentDirectoryBase(), "/src/App/Services"));
+        file_1.default.makeDirectory(path.join(file_1.default.getCurrentDirectoryBase(), "src/App/Services/Validation"));
         file_1.default.writeFile(file_1.default.getCurrentDirectoryBase() + "/src/App/Services/Validation/JoiValidationService.ts", file_1.default.readFile(file_1.default.resource_path("/stubs/Utils/JoiValidationService.stub")));
         file_1.default.writeFile(file_1.default.getCurrentDirectoryBase() + "/src/App/Services/Validation/ValidationService.ts", file_1.default.readFile(file_1.default.resource_path("/stubs/Utils/ValidationService.stub")));
         file_1.default.writeFile(file_1.default.getCurrentDirectoryBase() + "/src/App/Services/Validation/BaseErrorSchema.ts", file_1.default.readFile(file_1.default.resource_path("/stubs/Utils/BaseErrorSchema.stub")));
         file_1.default.writeFile(file_1.default.getCurrentDirectoryBase() + "/src/App/Services/Validation/ErrorMessages.ts", file_1.default.readFile(file_1.default.resource_path("/stubs/Utils/ErrorMessages.stub")));
         var loggerStub = file_1.default.readFile(file_1.default.resource_path("/stubs/Utils/WinstonLoggerService.stub"));
         loggerStub = loggerStub.replace(/{{interface_path}}/gi, "./LoggerService");
-        loggerStub = loggerStub.replace(/{{log_levels_path}}/gi, "../Enums/LogLevels");
-        file_1.default.writeFile(file_1.default.getCurrentDirectoryBase() + "/src/App/Services/WinstonLoggerService.ts", loggerStub);
-        file_1.default.writeFile(file_1.default.getCurrentDirectoryBase() + "/src/App/Services/LoggerService.ts", file_1.default.readFile(file_1.default.resource_path("/stubs/Utils/LoggerService.stub")));
+        loggerStub = loggerStub.replace(/{{log_levels_path}}/gi, "../../Enums/LogLevels");
+        file_1.default.makeDirectory(path.join(file_1.default.getCurrentDirectoryBase(), "src/App/Services/Logger"));
+        file_1.default.writeFile(file_1.default.getCurrentDirectoryBase() + "/src/App/Services/Logger/WinstonLoggerService.ts", loggerStub);
+        var loggerInterfaceStub = file_1.default.readFile(file_1.default.resource_path("/stubs/Utils/LoggerService.stub"));
+        loggerInterfaceStub = loggerInterfaceStub.replace(/{{log_levels_path}}/gi, "../../Enums/LogLevels");
+        file_1.default.writeFile(file_1.default.getCurrentDirectoryBase() + "/src/App/Services/Logger/LoggerService.ts", loggerInterfaceStub);
         file_1.default.makeDirectory(path.join(file_1.default.getCurrentDirectoryBase(), "/src/App/Repositories"));
         file_1.default.writeFile(file_1.default.getCurrentDirectoryBase() + "/src/App/Repositories/TypeRepository.ts", file_1.default.readFile(file_1.default.resource_path("/stubs/Utils/TypeRepository.stub")));
         file_1.default.makeDirectory(path.join(file_1.default.getCurrentDirectoryBase(), "/src/App/Exceptions"));
@@ -83,17 +81,22 @@ var InitCommand = /** @class */ (function () {
         file_1.default.writeFile(file_1.default.getCurrentDirectoryBase() + "/src/App/Enums/LogLevels.ts", file_1.default.readFile(file_1.default.resource_path("/stubs/Utils/LogLevels.stub")));
         file_1.default.makeDirectory(path.join(file_1.default.getCurrentDirectoryBase(), "/src/App/Models"));
         file_1.default.makeDirectory(path.join(file_1.default.getCurrentDirectoryBase(), "/src/database/migrations"));
-        file_1.default.writeFile(file_1.default.getCurrentDirectoryBase() + "/src/database/DatabaseConnection.ts", file_1.default.readFile(file_1.default.resource_path("/stubs/Utils/DatabaseConnection.stub")));
+        var databaseConnectionStub = file_1.default.readFile(file_1.default.resource_path("/stubs/Utils/DatabaseConnection.stub"));
+        databaseConnectionStub = databaseConnectionStub.replace(/{{config_path}}/gi, "../config/mode");
+        file_1.default.writeFile(file_1.default.getCurrentDirectoryBase() + "/src/database/DatabaseConnection.ts", databaseConnectionStub);
+        file_1.default.makeDirectory(path.join(file_1.default.getCurrentDirectoryBase(), "src/database/Config"));
         file_1.default.writeFile(file_1.default.getCurrentDirectoryBase() + "/src/database/Config/ProductionConfig.ts", file_1.default.readFile(file_1.default.resource_path("/stubs/Utils/DatabaseProductionConfig.stub")));
         file_1.default.writeFile(file_1.default.getCurrentDirectoryBase() + "/src/database/Config/DevelopmentConfig.ts", file_1.default.readFile(file_1.default.resource_path("/stubs/Utils/DatabaseDevelopmentConfig.stub")));
         file_1.default.writeFile(file_1.default.getCurrentDirectoryBase() + "/src/database/Config/TestingConfig.ts", file_1.default.readFile(file_1.default.resource_path("/stubs/Utils/DatabaseTestingConfig.stub")));
         file_1.default.writeFile(file_1.default.getCurrentDirectoryBase() + "/src/database/Config/ConfigVariables.ts", file_1.default.readFile(file_1.default.resource_path("/stubs/Utils/DatabaseCommonConfig.stub")));
+        file_1.default.makeDirectory(path.join(file_1.default.getCurrentDirectoryBase(), "src/config"));
+        file_1.default.writeFile(path.join(file_1.default.getCurrentDirectoryBase(), "src/config/mode.ts"), file_1.default.readFile(file_1.default.resource_path("/stubs/Utils/ConfigModes.stub")));
         file_1.default.makeDirectory(file_1.default.getCurrentDirectoryBase() + "/src/App/DI");
         var diStub = file_1.default.readFile(file_1.default.resource_path("/stubs/Utils/di.config.stub"));
         diStub = diStub.replace(/{{router_path}}/gi, "../../routes");
-        diStub = diStub.replace(/{{validation_interface_path}}/gi, "../Services/ValidationService");
+        diStub = diStub.replace(/{{validation_interface_path}}/gi, "../Services/Validation/ValidationService");
         diStub = diStub.replace(/{{logger_interface_path}}/gi, "../Services/Logger/LoggerService");
-        diStub = diStub.replace(/{{validation_service_path}}/gi, "../Services/JoiValidationService");
+        diStub = diStub.replace(/{{validation_service_path}}/gi, "../Services/Validation/JoiValidationService");
         diStub = diStub.replace(/{{logger_service_path}}/gi, "../Services/Logger/WinstonLoggerService");
         file_1.default.writeFile(file_1.default.getCurrentDirectoryBase() + "/src/App/DI/di.config.ts", diStub);
         file_1.default.writeFile(file_1.default.getCurrentDirectoryBase() + "/src/App/DI/interfaces.types.ts", file_1.default.readFile(file_1.default.resource_path("/stubs/Utils/interfaces.types.stub")));
@@ -105,16 +108,20 @@ var InitCommand = /** @class */ (function () {
         errorHandlerStub = errorHandlerStub.replace(/{{log_levels_path}}/gi, "../Enums/LogLevels");
         errorHandlerStub = errorHandlerStub.replace(/{{services_path}}/gi, "../Services/Logger");
         errorHandlerStub = errorHandlerStub.replace(/{{error_messages_path}}/gi, "../Services/Validation/");
+        errorHandlerStub = errorHandlerStub.replace(/{{http_codes_path}}/gi, "../Enums");
         file_1.default.writeFile(file_1.default.getCurrentDirectoryBase() + "/src/App/Debug/ErrorHandler.ts", errorHandlerStub);
         file_1.default.writeFile(file_1.default.getCurrentDirectoryBase() + "/src/App/Debug/customResponse.ts", file_1.default.readFile(file_1.default.resource_path("/stubs/Utils/customResponse.stub")));
         file_1.default.makeDirectory(path.join(file_1.default.getCurrentDirectoryBase(), "/src/routes"));
         file_1.default.writeFile(file_1.default.getCurrentDirectoryBase() + "/src/routes/index.ts", file_1.default.readFile(file_1.default.resource_path("/stubs/Utils/Router.stub")));
         file_1.default.writeFile(path.join(file_1.default.getCurrentDirectoryBase(), "/tsconfig.json"), InitCommand.getTsConfigTemplate());
         file_1.default.writeFile(path.join(file_1.default.getCurrentDirectoryBase(), "/.env"), InitCommand.createEnvironmentFiles());
-        file_1.default.writeFile(file_1.default.getCurrentDirectoryBase() + "/src/server.ts", file_1.default.readFile(file_1.default.resource_path("/stubs/Utils/server.stub")));
+        var serverStub = file_1.default.readFile(file_1.default.resource_path("/stubs/Utils/server.stub"));
+        serverStub = serverStub.replace(/{{di_path}}/gi, "App/DI/di.config");
+        file_1.default.writeFile(file_1.default.getCurrentDirectoryBase() + "/src/server.ts", serverStub);
         var appStub = file_1.default.readFile(file_1.default.resource_path("/stubs/Utils/App.stub"));
         appStub = appStub.replace(/{{database_connection_path}}/gi, "database/DatabaseConnection");
-        appStub = appStub.replace(/{{error_handler_path}}/gi, "Debug/ErrorHandler");
+        appStub = appStub.replace(/{{error_handler_path}}/gi, "App/Debug/ErrorHandler");
+        appStub = appStub.replace(/{{di_path}}/gi, "App/DI/di.config");
         appStub = appStub.replace(/{{routes_path}}/gi, "routes");
         file_1.default.writeFile(file_1.default.getCurrentDirectoryBase() + "/src/App.ts", appStub);
         file_1.default.writeFile(file_1.default.getCurrentDirectoryBase() + "/package.json", InitCommand.getNodePackageTemplate());
@@ -164,7 +171,9 @@ var InitCommand = /** @class */ (function () {
         file_1.default.makeDirectory(file_1.default.getCurrentDirectoryBase() + "/src/Domain/Interfaces");
         file_1.default.makeDirectory(file_1.default.getCurrentDirectoryBase() + "/src/Domain/Interfaces/Repositories");
         file_1.default.makeDirectory(file_1.default.getCurrentDirectoryBase() + "/src/Domain/Interfaces/Services");
-        file_1.default.writeFile(file_1.default.getCurrentDirectoryBase() + "/src/Domain/Interfaces/Services/LoggerService.ts", file_1.default.readFile(file_1.default.resource_path("/stubs/Utils/LoggerService.stub")));
+        var loggerInterfaceStub = file_1.default.readFile(file_1.default.resource_path("/stubs/Utils/LoggerService.stub"));
+        loggerInterfaceStub = loggerInterfaceStub.replace(/{{log_levels_path}}/gi, "../../Enums/LogLevels");
+        file_1.default.writeFile(file_1.default.getCurrentDirectoryBase() + "/src/Domain/Interfaces/Services/LoggerService.ts", loggerInterfaceStub);
         file_1.default.makeDirectory(file_1.default.getCurrentDirectoryBase() + "/src/Domain/Enums");
         file_1.default.writeFile(file_1.default.getCurrentDirectoryBase() + "/src/Domain/Enums/LogLevels.ts", file_1.default.readFile(file_1.default.resource_path("/stubs/Utils/LogLevels.stub")));
         /**
@@ -179,7 +188,9 @@ var InitCommand = /** @class */ (function () {
         file_1.default.writeFile(file_1.default.getCurrentDirectoryBase() + "/src/Infrastructure/Logger/Providers/WinstonLoggerService.ts", loggerStub);
         file_1.default.makeDirectory(file_1.default.getCurrentDirectoryBase() + "/src/Infrastructure/Persistence/Migrations");
         file_1.default.makeDirectory(file_1.default.getCurrentDirectoryBase() + "/src/Infrastructure/Persistence/Config");
-        file_1.default.writeFile(file_1.default.getCurrentDirectoryBase() + "/src/Infrastructure/Persistence/DatabaseConnection.ts", file_1.default.readFile(file_1.default.resource_path("/stubs/Utils/DatabaseConnection.stub")));
+        var databaseConnectionStub = file_1.default.readFile(file_1.default.resource_path("/stubs/Utils/DatabaseConnection.stub"));
+        databaseConnectionStub = databaseConnectionStub.replace(/{{config_path}}/gi, "../../Config/mode");
+        file_1.default.writeFile(file_1.default.getCurrentDirectoryBase() + "/src/Infrastructure/Persistence/DatabaseConnection.ts", databaseConnectionStub);
         file_1.default.writeFile(file_1.default.getCurrentDirectoryBase() + "/src/Infrastructure/Persistence/Config/ProductionConfig.ts", file_1.default.readFile(file_1.default.resource_path("/stubs/Utils/DatabaseProductionConfig.stub")));
         file_1.default.writeFile(file_1.default.getCurrentDirectoryBase() + "/src/Infrastructure/Persistence/Config/DevelopmentConfig.ts", file_1.default.readFile(file_1.default.resource_path("/stubs/Utils/DatabaseDevelopmentConfig.stub")));
         file_1.default.writeFile(file_1.default.getCurrentDirectoryBase() + "/src/Infrastructure/Persistence/Config/TestingConfig.ts", file_1.default.readFile(file_1.default.resource_path("/stubs/Utils/DatabaseTestingConfig.stub")));
@@ -223,8 +234,8 @@ var InitCommand = /** @class */ (function () {
         file_1.default.writeFile(file_1.default.getCurrentDirectoryBase() + "/package.json", InitCommand.getNodePackageTemplate());
         file_1.default.writeFile(file_1.default.getCurrentDirectoryBase() + "/.gitignore", InitCommand.getGitIgnoreFile());
     };
-    InitCommand.createConfigFile = function (type, cqrs, dir) {
-        var filePath = path.join(file_1.default.getCurrentDirectoryBase(), dir, "/config.json");
+    InitCommand.createConfigFile = function (type, cqrs) {
+        var filePath = path.join(file_1.default.getCurrentDirectoryBase(), "/config.json");
         var content = InitCommand.getConfigContentFromType(type, cqrs);
         file_1.default.writeFile(filePath, JSON.stringify(content, undefined, 3));
     };
@@ -350,6 +361,7 @@ var InitCommand = /** @class */ (function () {
                 typeorm: "^0.2.30",
                 morgan: "^1.10.0",
                 mysql: "^2.18.1",
+                winston: "^3.3.3",
             },
             devDependencies: {
                 "@types/express": "^4.17.11",
