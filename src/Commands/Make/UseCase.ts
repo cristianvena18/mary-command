@@ -134,7 +134,7 @@ export class MakeUseCase implements yargs.CommandModule {
       chalk.greenBright(" >>> File " + handlerFilePath + " was created")
     );
 
-    if (!isCommand) {
+    if (!isCommand && config.shouldCreateQueryResult) {
       MakeUseCase.fileSystemPut(resultFilePath, resultClass);
       console.info(
         chalk.greenBright(" >>> File " + resultFilePath + " was created")
@@ -158,13 +158,7 @@ export class MakeUseCase implements yargs.CommandModule {
       `${useCaseName}${grouping}Handler`,
       config
     );
-    if (!isCommand && config.shouldCreateQueryResult) {
-      MakeUseCase.bindFile(
-        resultFilePath,
-        `${useCaseName}${grouping}Result`,
-        config
-      );
-    }
+
     console.info(chalk.greenBright("5. Classes was binding!\n"));
   }
 

@@ -1,10 +1,9 @@
-import HandlerInterface from '../../../../Infrastructure/QueryBus/Handler/IHandler';
 import {{action}}Query from '../../../Queries/Query/{{grouping}}/{{action}}Query';
 import {{action}}Result from '../../../Queries/Results/{{grouping}}/{{action}}Result';
 import { injectable, inject } from 'inversify';
 
 @injectable()
-class {{action}}Handler implements HandlerInterface
+class {{action}}Handler
 {
     /**
      * Execute the given query and return a result

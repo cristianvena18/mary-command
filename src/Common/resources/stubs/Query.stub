@@ -1,6 +1,4 @@
-import QueryInterface from '../../../../Infrastructure/QueryBus/Query/IQuery';
-
-class {{action}}Query implements QueryInterface
+class {{action}}Query
 {
 {{class_attributes}}
     public constructor(

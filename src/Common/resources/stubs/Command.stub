@@ -1,6 +1,4 @@
-import CommandInterface from '../../../../Infrastructure/CommandBus/Command/ICommand';
-
-class {{action}}Command implements CommandInterface
+class {{action}}Command
 {
 {{class_attributes}}
     public constructor(

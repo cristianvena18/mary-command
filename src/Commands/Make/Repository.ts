@@ -124,7 +124,7 @@ export class MakeRepository implements yargs.CommandModule {
     let stubContent = file.readFile(stub);
 
     const interfacePath = config.shouldCreateRepositoryInterface
-      ? `import { ${name}Repository } from '../../../Domain/Interfaces/Repositories/${name}Repository.ts'`
+      ? `import { ${name}Repository } from '../../../Domain/Interfaces/Repositories/${name}Repository'`
       : "";
 
     const _interface = config.shouldCreateRepositoryInterface
