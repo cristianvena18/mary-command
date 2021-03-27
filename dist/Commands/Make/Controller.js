@@ -4,6 +4,7 @@ exports.MakeController = void 0;
 var file_1 = require("../../Common/file");
 var FileExistException_1 = require("../../Exceptions/FileExistException");
 var GetConfig_1 = require("../../Common/Helpers/GetConfig");
+var chalk = require("chalk");
 var MakeController = /** @class */ (function () {
     function MakeController() {
         this.command = "make:controller";
@@ -22,7 +23,9 @@ var MakeController = /** @class */ (function () {
         var actionClass = MakeController.buildActionClass(controllerName);
         MakeController.makeDirectory(actionFilePath);
         MakeController.fileSystemPut(actionFilePath, actionClass);
-        console.info(" >>> File " + actionFilePath + " was created");
+        console.info(chalk.greenBright(" >>> File " + actionFilePath + " was created"));
+        MakeController.bindFile(actionFilePath, controllerName + "Controller", config);
+        console.info(chalk.greenBright(" >>> File " + actionFilePath + " was binding"));
     };
     MakeController.buildActionFilePath = function (controllerName, config) {
         var path = "" + file_1.default.getCurrentDirectoryBase() + config.controllerPath + controllerName + "Controller.ts";
@@ -45,6 +48,46 @@ var MakeController = /** @class */ (function () {
     };
     MakeController.fileSystemPut = function (filePath, fileClass) {
         file_1.default.writeFile(filePath, fileClass);
+    };
+    MakeController.bindFile = function (filePath, fileName, config) {
+        var diPath = config.diPath;
+        var diPathSpliced = diPath.split("/").reverse();
+        diPathSpliced = diPathSpliced.slice(1);
+        var importOut = "";
+        for (var _i = 0, diPathSpliced_1 = diPathSpliced; _i < diPathSpliced_1.length; _i++) {
+            var a = diPathSpliced_1[_i];
+            if (a !== "src") {
+                importOut += "../";
+            }
+        }
+        filePath = filePath.replace("" + file_1.default.getCurrentDirectoryBase(), "");
+        filePath = filePath.slice(4);
+        var diContent = file_1.default
+            .readFile("" + file_1.default.getCurrentDirectoryBase() + diPath)
+            .split(/\n/);
+        var newDiContent = [
+            "import " + fileName + " from '" + (importOut + filePath.replace(".ts", "")) + "';",
+        ];
+        var containerContent = [];
+        for (var _a = 0, diContent_1 = diContent; _a < diContent_1.length; _a++) {
+            var content = diContent_1[_a];
+            if (content.includes("import")) {
+                newDiContent.push(content);
+            }
+            else {
+                containerContent.push(content);
+            }
+        }
+        for (var _b = 0, containerContent_1 = containerContent; _b < containerContent_1.length; _b++) {
+            var content = containerContent_1[_b];
+            if (content.includes("//Actions")) {
+                newDiContent.push(content);
+                newDiContent.push("DIContainer.bind(" + fileName + ").toSelf();");
+                continue;
+            }
+            newDiContent.push(content);
+        }
+        file_1.default.writeFile(diPath, newDiContent);
     };
     return MakeController;
 }());

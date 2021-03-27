@@ -3,6 +3,7 @@ import file from "../../Common/file";
 import FileExistException from "../../Exceptions/FileExistException";
 import { Config } from "../../Common/Types/Config";
 import { getConfig } from "../../Common/Helpers/GetConfig";
+import * as chalk from "chalk";
 
 export class MakeRepository implements yargs.CommandModule {
   command = "make:repository";
@@ -43,7 +44,9 @@ export class MakeRepository implements yargs.CommandModule {
     MakeRepository.makeDirectory(actionFilePath);
 
     MakeRepository.fileSystemPut(actionFilePath, actionClass);
-    console.info(" >>> File " + actionFilePath + " was created");
+    console.info(
+      chalk.greenBright(" >>> File " + actionFilePath + " was created")
+    );
 
     MakeRepository.bindFile(
       actionFilePath,
@@ -51,6 +54,10 @@ export class MakeRepository implements yargs.CommandModule {
       interfaceFilePath,
       `${repositoryName}Repository`,
       config
+    );
+
+    console.info(
+      chalk.greenBright(" >>> File " + actionFilePath + " was binding")
     );
   }
 
@@ -130,7 +137,7 @@ export class MakeRepository implements yargs.CommandModule {
       .replace(/{{interface_path}}/gi, interfacePath)
       .replace(/{{interface}}/gi, _interface)
       .replace(/{{database}}/gi, config.database);
-
+    //TODO: check model path
     return stubContent;
   }
 

@@ -8,7 +8,7 @@ class {{action}}Controller
     public constructor() {}
 
     public createView(res: Response) {
-        return res.view('new');
+        return res.render('new');
     }
 
     public async create(req: Request, res: Response)
@@ -17,7 +17,7 @@ class {{action}}Controller
     }
 
     public updateView(res: Response) {
-        return res.view('edit')
+        return res.render('edit')
     }
 
     public async update(req: Request, res: Response)
@@ -26,7 +26,7 @@ class {{action}}Controller
     }
 
     public async index(req: Request, res: Response) {
-        return res.view('index');
+        return res.render('index');
     }
 
     public async delete(req: Request, res: Response)

@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.MakeTest = void 0;
 var file_1 = require("../../Common/file");
 var FileExistException_1 = require("../../Exceptions/FileExistException");
+var chalk = require("chalk");
 var MakeTest = /** @class */ (function () {
     function MakeTest() {
         this.command = "make:test";
@@ -24,7 +25,7 @@ var MakeTest = /** @class */ (function () {
         var actionClass = MakeTest.buildTestClass(testName, type);
         MakeTest.makeDirectory(actionFilePath);
         MakeTest.fileSystemPut(actionFilePath, actionClass);
-        console.info(" >>> Test " + actionFilePath + " was created");
+        console.info(chalk.greenBright(" >>> Test " + actionFilePath + " was created"));
     };
     MakeTest.makeDirectory = function (filePath) {
         filePath = filePath.slice(0, filePath.lastIndexOf("/"));

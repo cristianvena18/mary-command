@@ -3,6 +3,7 @@ import file from "../../Common/file";
 import FileExistException from "../../Exceptions/FileExistException";
 import { getConfig } from "../../Common/Helpers/GetConfig";
 import { Config } from "../../Common/Types/Config";
+import * as chalk from "chalk";
 
 export class MakeUseCase implements yargs.CommandModule {
   command = "make:usecase";
@@ -24,7 +25,8 @@ export class MakeUseCase implements yargs.CommandModule {
       .option("p", {
         alias: "parameters",
         required: true,
-        describe: "Parameters to generate use case (id-number,name-string,email-Object)",
+        describe:
+          "Parameters to generate use case (id-number,name-string,email-Object)",
       })
       .option("g", {
         alias: "grouping",
@@ -40,8 +42,8 @@ export class MakeUseCase implements yargs.CommandModule {
     const attributes: string = args.parameters as any;
 
     const config = getConfig();
-    if (config.type === 'default') {
-      console.error('Not supported for your config!');
+    if (config.type === "default") {
+      console.error(chalk.redBright("Not supported for your config!"));
       process.exit(1);
     }
 
@@ -74,7 +76,7 @@ export class MakeUseCase implements yargs.CommandModule {
         ? MakeUseCase.buildResultFilePath(useCaseName, grouping, config)
         : null;
 
-    console.info("\n1. File paths was built!\n");
+    console.info(chalk.greenBright("\n1. File paths was built!\n"));
 
     const actionClass = MakeUseCase.buildActionClass(
       useCaseName,
@@ -102,7 +104,7 @@ export class MakeUseCase implements yargs.CommandModule {
         ? MakeUseCase.buildResultClass(useCaseName, grouping)
         : null;
 
-    console.info("2. Classes was built!\n");
+    console.info(chalk.greenBright("2. Classes was built!\n"));
 
     MakeUseCase.makeDirectory(actionFilePath);
     MakeUseCase.makeDirectory(adapterFilePath);
@@ -113,23 +115,33 @@ export class MakeUseCase implements yargs.CommandModule {
       MakeUseCase.makeDirectory(resultFilePath);
     }
 
-    console.info("3. Directories was checked!\n");
+    console.info(chalk.greenBright("3. Directories was checked!\n"));
 
     MakeUseCase.fileSystemPut(actionFilePath, actionClass);
-    console.info(" >>> File " + actionFilePath + " was created");
+    console.info(
+      chalk.greenBright(" >>> File " + actionFilePath + " was created")
+    );
     MakeUseCase.fileSystemPut(adapterFilePath, adapterClass);
-    console.info(" >>> File " + adapterFilePath + " was created");
+    console.info(
+      chalk.greenBright(" >>> File " + adapterFilePath + " was created")
+    );
     MakeUseCase.fileSystemPut(inputFilePath, inputClass);
-    console.info(" >>> File " + inputFilePath + " was created");
+    console.info(
+      chalk.greenBright(" >>> File " + inputFilePath + " was created")
+    );
     MakeUseCase.fileSystemPut(handlerFilePath, handlerClass);
-    console.info(" >>> File " + handlerFilePath + " was created");
+    console.info(
+      chalk.greenBright(" >>> File " + handlerFilePath + " was created")
+    );
 
     if (!isCommand) {
       MakeUseCase.fileSystemPut(resultFilePath, resultClass);
-      console.info(" >>> File " + resultFilePath + " was created");
+      console.info(
+        chalk.greenBright(" >>> File " + resultFilePath + " was created")
+      );
     }
 
-    console.info("4. Files was created!\n");
+    console.info(chalk.greenBright("4. Files was created!\n"));
 
     MakeUseCase.bindFile(
       actionFilePath,
@@ -153,7 +165,7 @@ export class MakeUseCase implements yargs.CommandModule {
         config
       );
     }
-    console.info("5. Classes was binding!\n");
+    console.info(chalk.greenBright("5. Classes was binding!\n"));
   }
 
   private static buildActionFilePath(action, grouping, config: Config) {

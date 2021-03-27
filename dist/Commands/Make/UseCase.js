@@ -4,6 +4,7 @@ exports.MakeUseCase = void 0;
 var file_1 = require("../../Common/file");
 var FileExistException_1 = require("../../Exceptions/FileExistException");
 var GetConfig_1 = require("../../Common/Helpers/GetConfig");
+var chalk = require("chalk");
 var MakeUseCase = /** @class */ (function () {
     function MakeUseCase() {
         this.command = "make:usecase";
@@ -37,8 +38,8 @@ var MakeUseCase = /** @class */ (function () {
         var grouping = args.grouping;
         var attributes = args.parameters;
         var config = GetConfig_1.getConfig();
-        if (config.type === 'default') {
-            console.error('Not supported for your config!');
+        if (config.type === "default") {
+            console.error(chalk.redBright("Not supported for your config!"));
             process.exit(1);
         }
         var isCommand = useCaseType === "c";
@@ -49,7 +50,7 @@ var MakeUseCase = /** @class */ (function () {
         var resultFilePath = isCommand === false && config.shouldCreateQueryResult
             ? MakeUseCase.buildResultFilePath(useCaseName, grouping, config)
             : null;
-        console.info("\n1. File paths was built!\n");
+        console.info(chalk.greenBright("\n1. File paths was built!\n"));
         var actionClass = MakeUseCase.buildActionClass(useCaseName, grouping, isCommand);
         var adapterClass = MakeUseCase.buildAdapterClass(useCaseName, grouping, isCommand);
         var inputClass = MakeUseCase.buildInputClass(useCaseName, grouping, attributes, isCommand);
@@ -57,7 +58,7 @@ var MakeUseCase = /** @class */ (function () {
         var resultClass = isCommand === false
             ? MakeUseCase.buildResultClass(useCaseName, grouping)
             : null;
-        console.info("2. Classes was built!\n");
+        console.info(chalk.greenBright("2. Classes was built!\n"));
         MakeUseCase.makeDirectory(actionFilePath);
         MakeUseCase.makeDirectory(adapterFilePath);
         MakeUseCase.makeDirectory(inputFilePath);
@@ -65,27 +66,27 @@ var MakeUseCase = /** @class */ (function () {
         if (!isCommand) {
             MakeUseCase.makeDirectory(resultFilePath);
         }
-        console.info("3. Directories was checked!\n");
+        console.info(chalk.greenBright("3. Directories was checked!\n"));
         MakeUseCase.fileSystemPut(actionFilePath, actionClass);
-        console.info(" >>> File " + actionFilePath + " was created");
+        console.info(chalk.greenBright(" >>> File " + actionFilePath + " was created"));
         MakeUseCase.fileSystemPut(adapterFilePath, adapterClass);
-        console.info(" >>> File " + adapterFilePath + " was created");
+        console.info(chalk.greenBright(" >>> File " + adapterFilePath + " was created"));
         MakeUseCase.fileSystemPut(inputFilePath, inputClass);
-        console.info(" >>> File " + inputFilePath + " was created");
+        console.info(chalk.greenBright(" >>> File " + inputFilePath + " was created"));
         MakeUseCase.fileSystemPut(handlerFilePath, handlerClass);
-        console.info(" >>> File " + handlerFilePath + " was created");
+        console.info(chalk.greenBright(" >>> File " + handlerFilePath + " was created"));
         if (!isCommand) {
             MakeUseCase.fileSystemPut(resultFilePath, resultClass);
-            console.info(" >>> File " + resultFilePath + " was created");
+            console.info(chalk.greenBright(" >>> File " + resultFilePath + " was created"));
         }
-        console.info("4. Files was created!\n");
+        console.info(chalk.greenBright("4. Files was created!\n"));
         MakeUseCase.bindFile(actionFilePath, "" + useCaseName + grouping + "Action", config);
         MakeUseCase.bindFile(adapterFilePath, "" + useCaseName + grouping + "Adapter", config);
         MakeUseCase.bindFile(handlerFilePath, "" + useCaseName + grouping + "Handler", config);
         if (!isCommand && config.shouldCreateQueryResult) {
             MakeUseCase.bindFile(resultFilePath, "" + useCaseName + grouping + "Result", config);
         }
-        console.info("5. Classes was binding!\n");
+        console.info(chalk.greenBright("5. Classes was binding!\n"));
     };
     MakeUseCase.buildActionFilePath = function (action, grouping, config) {
         var path = "" + file_1.default.getCurrentDirectoryBase() + config.controllerPath + grouping + "/" + action + "Action.ts";

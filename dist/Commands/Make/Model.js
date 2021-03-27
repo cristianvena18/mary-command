@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.MakeModel = void 0;
 var file_1 = require("../../Common/file");
 var GetConfig_1 = require("../../Common/Helpers/GetConfig");
+var chalk = require("chalk");
 var MakeModel = /** @class */ (function () {
     function MakeModel() {
         this.command = "make:model";
@@ -48,6 +49,7 @@ var MakeModel = /** @class */ (function () {
             getMethods += "    }";
         }
         file_1.default.writeFile(path, MakeModel.getTemplate(name, classAttributes, constructorParameters, constructorAssignment, getMethods));
+        console.info(chalk.greenBright(" >>> File " + path + " was created"));
     };
     MakeModel.getTemplate = function (name, classAttributes, constructorParameters, constructorAssignment, getMethods) {
         return "import {Entity, PrimaryGeneratedColumn, Column} from \"typeorm\";\n    \n      @Entity()\n      export class " + name + " {\n      \n          " + classAttributes + "\n          \n          public constructor(" + constructorParameters + ") {\n            " + constructorAssignment + "\n          }\n          \n          " + getMethods + "\n      }\n      ";

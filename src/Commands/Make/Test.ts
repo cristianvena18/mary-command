@@ -1,6 +1,7 @@
 import * as yargs from "yargs";
 import file from "../../Common/file";
 import FileExistException from "../../Exceptions/FileExistException";
+import * as chalk from "chalk";
 
 export class MakeTest implements yargs.CommandModule {
   command = "make:test";
@@ -27,7 +28,9 @@ export class MakeTest implements yargs.CommandModule {
     MakeTest.makeDirectory(actionFilePath);
 
     MakeTest.fileSystemPut(actionFilePath, actionClass);
-    console.info(" >>> Test " + actionFilePath + " was created");
+    console.info(
+      chalk.greenBright(" >>> Test " + actionFilePath + " was created")
+    );
   }
 
   private static makeDirectory(filePath: string) {

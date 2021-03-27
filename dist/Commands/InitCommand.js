@@ -46,6 +46,7 @@ var InitCommand = /** @class */ (function () {
             InitCommand.createConfigFile("onion", cqrs === "yes");
         }
         InitCommand.createEnvironmentFiles();
+        console.info(chalk.greenBright("Bootstrapping ready! start to code!"));
     };
     InitCommand.checkIfExistAnyProject = function () {
         var _path = path.join(file_1.default.getCurrentDirectoryBase(), "/package.json");

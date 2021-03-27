@@ -51,6 +51,8 @@ export class InitCommand implements yargs.CommandModule {
     }
 
     InitCommand.createEnvironmentFiles();
+
+    console.info(chalk.greenBright("Bootstrapping ready! start to code!"));
   }
 
   private static checkIfExistAnyProject() {

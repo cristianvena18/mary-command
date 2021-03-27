@@ -4,6 +4,7 @@ exports.MakeRepository = void 0;
 var file_1 = require("../../Common/file");
 var FileExistException_1 = require("../../Exceptions/FileExistException");
 var GetConfig_1 = require("../../Common/Helpers/GetConfig");
+var chalk = require("chalk");
 var MakeRepository = /** @class */ (function () {
     function MakeRepository() {
         this.command = "make:repository";
@@ -31,8 +32,9 @@ var MakeRepository = /** @class */ (function () {
         var actionClass = MakeRepository.buildActionClass(repositoryName, config);
         MakeRepository.makeDirectory(actionFilePath);
         MakeRepository.fileSystemPut(actionFilePath, actionClass);
-        console.info(" >>> File " + actionFilePath + " was created");
+        console.info(chalk.greenBright(" >>> File " + actionFilePath + " was created"));
         MakeRepository.bindFile(actionFilePath, "" + config.database + repositoryName + "Repository", interfaceFilePath, repositoryName + "Repository", config);
+        console.info(chalk.greenBright(" >>> File " + actionFilePath + " was binding"));
     };
     MakeRepository.makeDirectory = function (filePath) {
         filePath = filePath.slice(0, filePath.lastIndexOf("/"));
@@ -83,6 +85,7 @@ var MakeRepository = /** @class */ (function () {
             .replace(/{{interface_path}}/gi, interfacePath)
             .replace(/{{interface}}/gi, _interface)
             .replace(/{{database}}/gi, config.database);
+        //TODO: check model path
         return stubContent;
     };
     MakeRepository.bindFile = function (filePath, fileName, interfacePath, interfaceName, config) {

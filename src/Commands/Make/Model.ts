@@ -2,6 +2,7 @@ import * as yargs from "yargs";
 import file from "../../Common/file";
 import { Config } from "../../Common/Types/Config";
 import { getConfig } from "../../Common/Helpers/GetConfig";
+import * as chalk from "chalk";
 
 export class MakeModel implements yargs.CommandModule {
   command = "make:model";
@@ -77,6 +78,8 @@ export class MakeModel implements yargs.CommandModule {
         getMethods
       )
     );
+
+    console.info(chalk.greenBright(" >>> File " + path + " was created"));
   }
 
   private static getTemplate(
