@@ -37,6 +37,9 @@ var InitCommand = /** @class */ (function () {
         if (type === "default") {
             InitCommand.createAppFolder();
             InitCommand.createConfigFile("default", false);
+            if (cqrs === "yes") {
+                console.info(chalk.yellowBright("Warning! default app not support cqrs"));
+            }
         }
         else {
             InitCommand.createOnionFolders(cqrs === "yes");
