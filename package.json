@@ -1,6 +1,6 @@
 {
   "name": "mary-command",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Bootstrapping node app for backend and CLI for create classes",
   "bin": {
     "mary-command": "./index.js"
