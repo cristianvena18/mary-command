@@ -8,7 +8,8 @@
   "author": "cristianvena18 <cristiandamianvena@gmail.com>",
   "license": "ISC",
   "scripts": {
-    "build": "yarn tsc && cp -r ./src/Common/resources ./dist/Common"
+    "build": "yarn tsc && cp -r ./src/Common/resources ./dist/Common",
+    "test": "jest"
   },
   "repository": {
     "url": "https://github.com/cristianvena18/mary-command"
@@ -21,8 +22,11 @@
     "yargs": "^16.0.3"
   },
   "devDependencies": {
+    "@types/jest": "^26.0.22",
     "@types/node": "^14.14.22",
+    "jest": "^26.6.3",
     "prettier": "^2.2.1",
+    "ts-jest": "^26.5.4",
     "ts-node": "^9.1.1",
     "typescript": "^4.1.3"
   }
