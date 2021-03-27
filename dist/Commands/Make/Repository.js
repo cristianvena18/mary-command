@@ -74,7 +74,7 @@ var MakeRepository = /** @class */ (function () {
         var stub = file_1.default.resource_path("/stubs/Repository.stub");
         var stubContent = file_1.default.readFile(stub);
         var interfacePath = config.shouldCreateRepositoryInterface
-            ? "import { " + name + "Repository } from '../../../Domain/Interfaces/Repositories/" + name + "Repository.ts'"
+            ? "import { " + name + "Repository } from '../../../Domain/Interfaces/Repositories/" + name + "Repository'"
             : "";
         var _interface = config.shouldCreateRepositoryInterface
             ? "implements " + name + "Repository"

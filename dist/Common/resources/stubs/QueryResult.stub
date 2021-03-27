@@ -1,6 +1,4 @@
-import ResultInterface from '../../../../Infrastructure/QueryBus/Result/IResult';
-
-class {{action}}Result implements ResultInterface
+class {{action}}Result
 {
     private value: any;
     public constructor(

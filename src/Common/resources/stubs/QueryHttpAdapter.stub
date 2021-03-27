@@ -1,8 +1,8 @@
 import { injectable, inject } from 'inversify';
 import {{action}}Query from "../../../../Application/Queries/Query/{{grouping}}/{{action}}Query";
 import {ValidationService} from "../../Validations/Utils/ValidationService";
-import INTERFACES from "../../../../Infrastructure/DI/interfaces.types";
-import ValidationException from "../../../../Application/Exception/ValidationException";
+import { INTERFACES } from "../../../../Infrastructure/DI/interfaces.types";
+import ValidationException from "../../../../Application/Exceptions/ValidationException";
 
 @injectable()
 class {{action}}Adapter

@@ -1,9 +1,8 @@
-import HandlerInterface from '../../../../Infrastructure/CommandBus/Handler/IHandler';
 import {{action}}Command from '../../../Commands/Command/{{grouping}}/{{action}}Command';
 import { injectable, inject } from 'inversify';
 
 @injectable()
-class {{action}}Handler implements HandlerInterface
+class {{action}}Handler
 {
     /**
      * Execute the given command

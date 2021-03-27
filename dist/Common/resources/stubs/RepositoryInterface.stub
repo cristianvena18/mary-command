@@ -1,4 +1,4 @@
-import {{name}} from '../../Entities/{{type}}';
+import { {{type}} } from '../../Entities/{{type}}';
 
 export interface {{type}}Repository {
     persist({{name}}: {{type}}): Promise<void>;
