@@ -98,7 +98,7 @@ class CreateAppFolder extends Common {
       `${file.getCurrentDirectoryBase()}/src/App/Enums/HttpCodes.ts`,
       file.readFile(file.resource_path("/stubs/Utils/HttpCodes.stub"))
     );
-    file.makeDirectory(`${file.getCurrentDirectoryBase()}/src/App/Enums`);
+
     file.writeFile(
       `${file.getCurrentDirectoryBase()}/src/App/Enums/LogLevels.ts`,
       file.readFile(file.resource_path("/stubs/Utils/LogLevels.stub"))

@@ -139,4 +139,110 @@ describe("Create Default Application", () => {
       "LoggerService content ../../Enums/LogLevels"
     );
   });
+
+  test("it should create a Repositories folder", () => {
+    CreateAppFolder.execute();
+
+    expect(file.makeDirectory).toBeCalledWith(
+      `${file.getCurrentDirectoryBase()}/src/App/Repositories`
+    );
+  });
+
+  test("it should create a TypeRepository class", () => {
+    file.readFile = jest.fn().mockImplementation(() => {
+      return "TypeRepository content";
+    });
+
+    CreateAppFolder.execute();
+
+    expect(file.writeFile).toBeCalledWith(
+      `${file.getCurrentDirectoryBase()}/src/App/Repositories/TypeRepository.ts`,
+      "TypeRepository content"
+    );
+  });
+
+  test("it should create a exceptions folder", () => {
+    CreateAppFolder.execute();
+
+    expect(file.makeDirectory).toBeCalledWith(
+      `${file.getCurrentDirectoryBase()}/src/App/Exceptions`
+    );
+  });
+
+  test("it should create a Enums folder", () => {
+    CreateAppFolder.execute();
+
+    expect(file.makeDirectory).toBeCalledWith(
+      `${file.getCurrentDirectoryBase()}/src/App/Enums`
+    );
+  });
+
+  test("it should create a models folder", () => {
+    CreateAppFolder.execute();
+
+    expect(file.makeDirectory).toBeCalledWith(
+      `${file.getCurrentDirectoryBase()}/src/App/Models`
+    );
+  });
+
+  test("it should create a migrations folder", () => {
+    CreateAppFolder.execute();
+
+    expect(file.makeDirectory).toBeCalledWith(
+      `${file.getCurrentDirectoryBase()}/src/database/migrations`
+    );
+  });
+
+  test("it should create a config database folder", () => {
+    CreateAppFolder.execute();
+
+    expect(file.makeDirectory).toBeCalledWith(
+      `${file.getCurrentDirectoryBase()}/src/database/Config`
+    );
+  });
+
+  test("it should create a config folder", () => {
+    CreateAppFolder.execute();
+
+    expect(file.makeDirectory).toBeCalledWith(
+      `${file.getCurrentDirectoryBase()}/src/config`
+    );
+  });
+
+  test("it should create a DI folder", () => {
+    CreateAppFolder.execute();
+
+    expect(file.makeDirectory).toBeCalledWith(
+      `${file.getCurrentDirectoryBase()}/src/App/DI`
+    );
+  });
+
+  test("it should create a Debug folder", () => {
+    CreateAppFolder.execute();
+
+    expect(file.makeDirectory).toBeCalledWith(
+      `${file.getCurrentDirectoryBase()}/src/App/Debug`
+    );
+  });
+
+  test("it should create a routes folder", () => {
+    CreateAppFolder.execute();
+
+    expect(file.makeDirectory).toBeCalledWith(
+      `${file.getCurrentDirectoryBase()}/src/routes`
+    );
+  });
+
+  test("it should create a App file", () => {
+    file.readFile = jest.fn().mockImplementation(() => {
+      return "App content";
+    });
+
+    CreateAppFolder.execute();
+
+    expect(file.writeFile).toBeCalledWith(
+      `${file.getCurrentDirectoryBase()}/src/App.ts`,
+      "App content"
+    );
+  });
 });
